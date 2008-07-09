@@ -41,6 +41,7 @@ public class MainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnGroupUpperLower = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -49,7 +50,17 @@ public class MainJFrame extends javax.swing.JFrame {
         chkShowDir = new javax.swing.JCheckBox();
         chkShowFiles = new javax.swing.JCheckBox();
         tbPaneConversions = new javax.swing.JTabbedPane();
-        jPanel2 = new javax.swing.JPanel();
+        changeCasePanel = new javax.swing.JPanel();
+        chkUpperExtension = new javax.swing.JCheckBox();
+        spUpperFrom = new javax.swing.JSpinner();
+        spUpperTo = new javax.swing.JSpinner();
+        spLowerFrom = new javax.swing.JSpinner();
+        spLowerTo = new javax.swing.JSpinner();
+        lblFrom = new javax.swing.JLabel();
+        lblTo = new javax.swing.JLabel();
+        chkLowerExtension = new javax.swing.JCheckBox();
+        rbtnUppercase = new javax.swing.JRadioButton();
+        rbtnLowercase = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -110,7 +121,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(chkShowDir)
                 .addGap(18, 18, 18)
                 .addComponent(chkShowFiles)
-                .addContainerGap(228, Short.MAX_VALUE))
+                .addContainerGap(188, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,28 +130,88 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(chkShowFiles))
         );
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 471, Short.MAX_VALUE)
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame"); // NOI18N
+        chkUpperExtension.setText(bundle.getString("uppercaseExtension")); // NOI18N
+
+        lblFrom.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblFrom.setText(bundle.getString("from")); // NOI18N
+
+        lblTo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTo.setText(bundle.getString("to")); // NOI18N
+
+        chkLowerExtension.setText(bundle.getString("lowercaseExtension")); // NOI18N
+
+        btnGroupUpperLower.add(rbtnUppercase);
+        rbtnUppercase.setText(bundle.getString("upperCase")); // NOI18N
+
+        btnGroupUpperLower.add(rbtnLowercase);
+        rbtnLowercase.setText(bundle.getString("lowerCase")); // NOI18N
+
+        javax.swing.GroupLayout changeCasePanelLayout = new javax.swing.GroupLayout(changeCasePanel);
+        changeCasePanel.setLayout(changeCasePanelLayout);
+        changeCasePanelLayout.setHorizontalGroup(
+            changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(changeCasePanelLayout.createSequentialGroup()
+                .addGroup(changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(changeCasePanelLayout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(rbtnUppercase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(changeCasePanelLayout.createSequentialGroup()
+                        .addComponent(rbtnLowercase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(1, 1, 1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                    .addComponent(spUpperFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                    .addComponent(spLowerFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
+                .addGap(22, 22, 22)
+                .addGroup(changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(spLowerTo, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                    .addComponent(lblTo, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                    .addComponent(spUpperTo, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
+                .addGroup(changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(changeCasePanelLayout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addComponent(chkUpperExtension, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(changeCasePanelLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(chkLowerExtension, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                        .addGap(56, 56, 56))))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 106, Short.MAX_VALUE)
+        changeCasePanelLayout.setVerticalGroup(
+            changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(changeCasePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTo)
+                    .addComponent(lblFrom))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addGroup(changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbtnUppercase)
+                    .addComponent(spUpperFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkUpperExtension)
+                    .addComponent(spUpperTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(changeCasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbtnLowercase)
+                    .addComponent(spLowerFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkLowerExtension)
+                    .addComponent(spLowerTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
-        tbPaneConversions.addTab("tab1", jPanel2);
+        tbPaneConversions.addTab(bundle.getString("changeCase"), changeCasePanel); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 471, Short.MAX_VALUE)
+            .addGap(0, 464, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 106, Short.MAX_VALUE)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
         tbPaneConversions.addTab("tab2", jPanel3);
@@ -154,8 +225,8 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
-                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -164,11 +235,11 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -285,13 +356,24 @@ private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup btnGroupUpperLower;
+    private javax.swing.JPanel changeCasePanel;
+    private javax.swing.JCheckBox chkLowerExtension;
     private javax.swing.JCheckBox chkShowDir;
     private javax.swing.JCheckBox chkShowFiles;
+    private javax.swing.JCheckBox chkUpperExtension;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblFrom;
+    private javax.swing.JLabel lblTo;
+    private javax.swing.JRadioButton rbtnLowercase;
+    private javax.swing.JRadioButton rbtnUppercase;
+    private javax.swing.JSpinner spLowerFrom;
+    private javax.swing.JSpinner spLowerTo;
+    private javax.swing.JSpinner spUpperFrom;
+    private javax.swing.JSpinner spUpperTo;
     private javax.swing.JTable table;
     private javax.swing.JTabbedPane tbPaneConversions;
     private javax.swing.JTree tree;
