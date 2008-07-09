@@ -33,8 +33,8 @@
               <Component id="jScrollPane2" min="-2" pref="161" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jScrollPane1" pref="472" max="32767" attributes="0"/>
-                  <Component id="tbPaneConversions" alignment="0" pref="472" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="476" max="32767" attributes="0"/>
+                  <Component id="tbPaneConversions" alignment="0" pref="476" max="32767" attributes="0"/>
                   <Component id="jPanel1" alignment="1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -46,11 +46,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane2" alignment="1" pref="461" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" alignment="1" pref="454" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="tbPaneConversions" min="-2" pref="134" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="293" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="285" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -113,7 +113,7 @@
                   <Component id="chkShowDir" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="chkShowFiles" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="188" max="32767" attributes="0"/>
+                  <EmptySpace pref="228" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -130,13 +130,17 @@
         <Component class="javax.swing.JCheckBox" name="chkShowDir">
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="Mostrar Directorios"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="com/cartiec/jrenamer/MainJFrame.properties" key="showDirectories" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="chkShowFiles">
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="Mostrar Archivos"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="com/cartiec/jrenamer/MainJFrame.properties" key="showFiles" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
         </Component>
       </SubComponents>
@@ -148,7 +152,7 @@
         <Container class="javax.swing.JPanel" name="changeCasePanel">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Change Case">
+              <JTabbedPaneConstraints tabName="May&#xfa;sculas Min&#xfa;sculas">
                 <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="com/cartiec/jrenamer/MainJFrame.properties" key="changeCase" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
@@ -163,34 +167,33 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
-                              <Component id="rbtnUppercase" max="32767" attributes="0"/>
+                              <Component id="rbtnUppercase" pref="93" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="rbtnLowercase" max="32767" attributes="0"/>
+                              <Component id="rbtnLowercase" pref="93" max="32767" attributes="0"/>
                               <EmptySpace min="1" pref="1" max="1" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblFrom" pref="45" max="32767" attributes="1"/>
-                          <Component id="spUpperFrom" alignment="0" pref="45" max="32767" attributes="2"/>
-                          <Component id="spLowerFrom" alignment="0" pref="45" max="32767" attributes="1"/>
+                          <Component id="lblFrom" pref="61" max="32767" attributes="1"/>
+                          <Component id="spUpperFrom" alignment="0" pref="61" max="32767" attributes="2"/>
+                          <Component id="spLowerFrom" alignment="0" pref="61" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace min="22" pref="22" max="22" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="spLowerTo" alignment="0" pref="39" max="32767" attributes="0"/>
-                          <Component id="lblTo" alignment="0" pref="39" max="32767" attributes="1"/>
-                          <Component id="spUpperTo" alignment="0" pref="39" max="32767" attributes="2"/>
+                          <Component id="spLowerTo" alignment="0" pref="58" max="32767" attributes="0"/>
+                          <Component id="lblTo" alignment="0" pref="58" max="32767" attributes="1"/>
+                          <Component id="spUpperTo" alignment="0" pref="58" max="32767" attributes="2"/>
                       </Group>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                              <Component id="chkUpperExtension" pref="235" max="32767" attributes="2"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Component id="chkUpperExtension" min="-2" pref="226" max="-2" attributes="2"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                              <Component id="chkLowerExtension" pref="192" max="32767" attributes="1"/>
+                          <Group type="102" attributes="1">
+                              <Component id="chkLowerExtension" max="32767" attributes="1"/>
                               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -205,19 +208,19 @@
                           <Component id="lblTo" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblFrom" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="8" max="32767" attributes="0"/>
+                      <EmptySpace pref="23" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="rbtnUppercase" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="spUpperFrom" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkUpperExtension" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="spUpperTo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkUpperExtension" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="rbtnLowercase" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="spLowerFrom" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkLowerExtension" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="spLowerTo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkLowerExtension" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -297,12 +300,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="464" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="471" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="106" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
