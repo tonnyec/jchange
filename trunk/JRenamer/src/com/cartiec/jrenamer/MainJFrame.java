@@ -6,7 +6,10 @@
 package com.cartiec.jrenamer;
 
 import java.io.File;
+import java.util.Vector;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -19,34 +22,47 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
-    DefaultMutableTreeNode top = new DefaultMutableTreeNode("My Computer");
-    
+    DefaultMutableTreeNode top = null;
     DefaultComboBoxModel cmbCaseReplaceModel = null;
-
-    /** Creates new form MainJFrame */
+    DefaultComboBoxModel cmbSpacesModel = null;
+    
     public MainJFrame() {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame"); // NOI18N
-        cmbCaseReplaceModel = new javax.swing.DefaultComboBoxModel(
-                new String[] { 
-            bundle.getString("todasEnMayusculas"), 
-            bundle.getString("todasEnMinusculas"),
-            bundle.getString("primeraLetraMayusculas"),
-            bundle.getString("primeraLetraDeCadaPalabraEnMayusculas") }
-        );
         
+        top = new DefaultMutableTreeNode(bundle.getString("raiz"));
+        cmbCaseReplaceModel = new javax.swing.DefaultComboBoxModel(
+                new String[]{
+                    bundle.getString("todasEnMayusculas"),
+                    bundle.getString("todasEnMinusculas"),
+                    bundle.getString("primeraLetraMayusculas"),
+                    bundle.getString("primeraLetraDeCadaPalabraEnMayusculas")
+                });
+        
+        cmbSpacesModel = new javax.swing.DefaultComboBoxModel(
+                new String[]{
+                    bundle.getString("espaciosAGuionesBajos"),
+                    bundle.getString("guionesBajosAEspacios"),
+                    bundle.getString("espaciosAPuntos"),
+                    bundle.getString("puntosAEspacios"),
+                    bundle.getString("espaciosAGuiones"),
+                    bundle.getString("guionesAEspacios")
+                });
+               
+                
         initComponents();
-
-        TableColumn column = table.getColumn("Seleccionar");
+        
+        //Table
+        TableColumn column = table.getColumnModel().getColumn(0);
         column.setMinWidth(20);
         column.setPreferredWidth(70);
-        column.setMaxWidth(70);        
+        column.setMaxWidth(70);
         table.getTableHeader().setReorderingAllowed(false);
-
-
+        
+        //Tree
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-        renderer.setLeafIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/document-properties.png")));
+        renderer.setLeafIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder.png")));
         renderer.setOpenIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/document-open.png")));
-        renderer.setClosedIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder-new.png")));
+        renderer.setClosedIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder.png")));
         tree.setCellRenderer(renderer);
     }
 
@@ -81,6 +97,15 @@ public class MainJFrame extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         chkAccents = new javax.swing.JCheckBox();
         replacePanel = new javax.swing.JPanel();
+        chkReplace = new javax.swing.JCheckBox();
+        txfReplaceThis = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        lblWith = new javax.swing.JLabel();
+        chkSpaces = new javax.swing.JCheckBox();
+        cmbSpaces = new javax.swing.JComboBox();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        btnPreview = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -110,6 +135,11 @@ public class MainJFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(table);
 
         tree.setToggleClickCount(1);
+        tree.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                treeMouseClicked(evt);
+            }
+        });
         tree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
                 treeTreeCollapsed(evt);
@@ -277,7 +307,81 @@ public class MainJFrame extends javax.swing.JFrame {
         tbPaneConversions.addTab(bundle.getString("mayusculasMinusculas"), changeCasePanel); // NOI18N
 
         replacePanel.setLayout(new java.awt.GridBagLayout());
+
+        chkReplace.setText(bundle.getString("reemplazar")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        replacePanel.add(chkReplace, gridBagConstraints);
+
+        txfReplaceThis.setPreferredSize(new java.awt.Dimension(80, 20));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        replacePanel.add(txfReplaceThis, gridBagConstraints);
+
+        jTextField2.setPreferredSize(new java.awt.Dimension(80, 20));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        replacePanel.add(jTextField2, gridBagConstraints);
+
+        lblWith.setText(bundle.getString("con")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        replacePanel.add(lblWith, gridBagConstraints);
+
+        chkSpaces.setText(bundle.getString("espacios")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        replacePanel.add(chkSpaces, gridBagConstraints);
+
+        cmbSpaces.setModel(cmbSpacesModel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        replacePanel.add(cmbSpaces, gridBagConstraints);
+
         tbPaneConversions.addTab(bundle.getString("reemplazar"), replacePanel); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 471, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 110, Short.MAX_VALUE)
+        );
+
+        tbPaneConversions.addTab(bundle.getString("Insertar/Eliminar"), jPanel2); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 471, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 110, Short.MAX_VALUE)
+        );
+
+        tbPaneConversions.addTab(bundle.getString("patrones"), jPanel3); // NOI18N
+
+        btnPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/edit-find.png"))); // NOI18N
+        btnPreview.setText(bundle.getString("vistaPrevia")); // NOI18N
+        btnPreview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreviewActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -287,10 +391,11 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, 476, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
+                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 476, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnPreview, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -300,9 +405,11 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPreview, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -322,18 +429,29 @@ private void treeTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-F
     ((DefaultTableModel) table.getModel()).getDataVector().clear();
     for (int i = 0; i < node.getChildCount(); i++) {
         checkNode((DefaultMutableTreeNode) node.getChildAt(i));
-        addToTable((DefaultMutableTreeNode) node.getChildAt(i));
     }
-
 }//GEN-LAST:event_treeTreeExpanded
 
 private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_treeTreeCollapsed
+}//GEN-LAST:event_treeTreeCollapsed
+
+private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
+    processTable();
+}//GEN-LAST:event_btnPreviewActionPerformed
+
+private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
     ((DefaultTableModel) table.getModel()).getDataVector().clear();
-    for (int i = 0; i < node.getChildCount(); i++) {
-        addToTable((DefaultMutableTreeNode) node.getChildAt(i));
+
+    Object uo = node.getUserObject();
+
+    if (uo instanceof MyFile) {
+        MyFile[] files = ((MyFile) uo).listFiles();
+        for (MyFile myFile : files) {
+            addToTable(myFile);
+        }
     }
-}//GEN-LAST:event_treeTreeCollapsed
+}//GEN-LAST:event_treeMouseClicked
 
     private void checkNode(DefaultMutableTreeNode node) {
         DefaultMutableTreeNode rootFile = null;
@@ -343,12 +461,14 @@ private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-
 
         Object nodeInfo = node.getUserObject();
         if (nodeInfo instanceof String) {
-            System.out.println(nodeInfo);
             File[] roots = File.listRoots();
-
-            for (int i = 0; i < roots.length; ++i) {
-                rootFile = new DefaultMutableTreeNode(new MyFile(roots[i]));
-                top.add(rootFile);
+            if (top.getChildCount() == 0) {
+                for (int i = 0; i < roots.length; ++i) {
+                    rootFile = new DefaultMutableTreeNode(new MyFile(roots[i]));
+                    if (roots[i].isDirectory()) {
+                        top.add(rootFile);
+                    }
+                }
             }
         }
 
@@ -361,29 +481,30 @@ private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-
             for (File file : files) {
                 MyFile f = new MyFile(file);
                 rootFile = new DefaultMutableTreeNode(f);
-                node.add(rootFile);
+                if (f.isDirectory()) {
+                    node.add(rootFile);
+                }
             }
 
         }
 
     }
 
-    private void addToTable(DefaultMutableTreeNode dmn) {
-        MyFile f = (MyFile) dmn.getUserObject();
+    private void addToTable(MyFile f) {
         boolean add = false;
-        if(chkShowDir.isSelected()){
-            if(f.isDirectory()){
+        if (chkShowDir.isSelected()) {
+            if (f.isDirectory()) {
                 add = true;
-            }            
+            }
         }
-        
-        if(chkShowFiles.isSelected()){
-            if(f.isFile()){
+
+        if (chkShowFiles.isSelected()) {
+            if (f.isFile()) {
                 add = true;
-            }  
+            }
         }
-        
-        if(add){
+
+        if (add) {
             ((DefaultTableModel) table.getModel()).addRow(
                     new Object[]{true, f, ""});
         }
@@ -394,12 +515,59 @@ private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-
         public MyFile(File pathname) {
             super(pathname.getPath());
         }
+        
+        public MyFile(String parent, String child) {
+            super(parent,child);
+        }
+        
+
 
         @Override
         public String toString() {
             String s = getName();
             return s.equals("") ? getPath() : s;
         }
+
+        @Override
+        public MyFile[] listFiles() {
+            String[] ss = list();
+            if (ss == null) {
+                return null;
+            }
+            int n = ss.length;
+            MyFile[] fs = new MyFile[n];
+            for (int i = 0; i < n; i++) {
+                fs[i] = new MyFile(this.getPath(),ss[i]);
+            }
+            return fs;
+        }
+    }
+
+    /**
+     * Loop table data - new Object[]{boolean, MyFile, String}
+     */
+    private void processTable() {
+        Vector<Vector> data = ((DefaultTableModel) table.getModel()).getDataVector();
+        Boolean check;
+        MyFile file;
+        String newName;
+        int i = 0;
+        for (Vector objects : data) {
+            if (objects != null) {
+                check = (Boolean) objects.get(0);
+                file = (MyFile) objects.get(1);
+                if (check) {
+                    newName = renameItem(file.toString());
+                    data.get(i).set(2, newName);
+                }
+            }
+            i++;
+        }
+        ((DefaultTableModel) table.getModel()).fireTableDataChanged();
+    }
+
+    private String renameItem(String str) {
+        return str.toUpperCase();
     }
 
     /**
@@ -412,8 +580,6 @@ private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-
 
             public void run() {
                 new MainJFrame().setVisible(true);
-                File f = new File("");
-
             }
         });
     }
@@ -421,18 +587,26 @@ private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btnGroupExtensions;
     private javax.swing.ButtonGroup btnGroupUpperLower;
+    private javax.swing.JButton btnPreview;
     private javax.swing.JButton btnReset;
     private javax.swing.JPanel changeCasePanel;
     private javax.swing.JCheckBox chkAccents;
+    private javax.swing.JCheckBox chkReplace;
     private javax.swing.JCheckBox chkShowDir;
     private javax.swing.JCheckBox chkShowFiles;
+    private javax.swing.JCheckBox chkSpaces;
     private javax.swing.JComboBox cmbCaseReplace;
+    private javax.swing.JComboBox cmbSpaces;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lblFrom;
     private javax.swing.JLabel lblTo;
+    private javax.swing.JLabel lblWith;
     private javax.swing.JRadioButton rbtnLowerExtension;
     private javax.swing.JRadioButton rbtnLowercase;
     private javax.swing.JRadioButton rbtnUpperExtension;
@@ -445,5 +619,6 @@ private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-
     private javax.swing.JTable table;
     private javax.swing.JTabbedPane tbPaneConversions;
     private javax.swing.JTree tree;
+    private javax.swing.JTextField txfReplaceThis;
     // End of variables declaration//GEN-END:variables
 }
