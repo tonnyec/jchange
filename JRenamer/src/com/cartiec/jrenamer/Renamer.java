@@ -129,8 +129,7 @@ public class Renamer {
         return toExtensionCase(str, true);
     }
    
-   
-        /**
+    /**
      * Extension to Lowercase
      * @param str
      * @return
@@ -138,7 +137,6 @@ public class Renamer {
     public static String toExtensionLowercase(String str){
         return toExtensionCase(str, false);
     }
-    
     
     public static String deleteAccents(String str){
         String val = str.replace("á", "a");

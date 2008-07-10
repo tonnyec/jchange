@@ -5,14 +5,10 @@
  */
 package com.cartiec.jrenamer;
 
-import java.io.File;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
  *
@@ -20,14 +16,11 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
-    DefaultMutableTreeNode top = null;
     DefaultComboBoxModel cmbCaseReplaceModel = null;
     DefaultComboBoxModel cmbSpacesModel = null;
-    
+
     public MainJFrame() {
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame"); // NOI18N
-        
-        top = new DefaultMutableTreeNode(bundle.getString("raiz"));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame");
         cmbCaseReplaceModel = new javax.swing.DefaultComboBoxModel(
                 new String[]{
                     bundle.getString("todasEnMayusculas"),
@@ -35,7 +28,7 @@ public class MainJFrame extends javax.swing.JFrame {
                     bundle.getString("primeraLetraMayusculas"),
                     bundle.getString("primeraLetraDeCadaPalabraEnMayusculas")
                 });
-        
+
         cmbSpacesModel = new javax.swing.DefaultComboBoxModel(
                 new String[]{
                     bundle.getString("espaciosAGuionesBajos"),
@@ -45,23 +38,17 @@ public class MainJFrame extends javax.swing.JFrame {
                     bundle.getString("espaciosAGuiones"),
                     bundle.getString("guionesAEspacios")
                 });
-               
-                
+
+
         initComponents();
-        
+
         //Table
         TableColumn column = table.getColumnModel().getColumn(0);
         column.setMinWidth(20);
         column.setPreferredWidth(70);
         column.setMaxWidth(70);
         table.getTableHeader().setReorderingAllowed(false);
-        
-        //Tree
-        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-        renderer.setLeafIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder.png")));
-        renderer.setOpenIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/document-open.png")));
-        renderer.setClosedIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder.png")));
-        tree.setCellRenderer(renderer);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -74,8 +61,6 @@ public class MainJFrame extends javax.swing.JFrame {
         btnGroupEnies = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tree =  new JTree(top);
         jPanel1 = new javax.swing.JPanel();
         chkShowDir = new javax.swing.JCheckBox();
         chkShowFiles = new javax.swing.JCheckBox();
@@ -123,6 +108,7 @@ public class MainJFrame extends javax.swing.JFrame {
         patternsPanel = new javax.swing.JPanel();
         btnPreview = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
+        fileBrowser = new com.cartiec.jrenamer.JFileBrowser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -151,27 +137,6 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(table);
 
-        tree.setToggleClickCount(1);
-        tree.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                treeMouseClicked(evt);
-            }
-        });
-        tree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
-            public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
-                treeTreeCollapsed(evt);
-            }
-            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
-                treeTreeExpanded(evt);
-            }
-        });
-        tree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
-            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                treeValueChanged(evt);
-            }
-        });
-        jScrollPane2.setViewportView(tree);
-
         chkShowDir.setSelected(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame"); // NOI18N
         chkShowDir.setText(bundle.getString("mostrarDirectorios")); // NOI18N
@@ -188,7 +153,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(chkShowDir)
                 .addGap(18, 18, 18)
                 .addComponent(chkShowFiles)
-                .addContainerGap(228, Short.MAX_VALUE))
+                .addContainerGap(264, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -495,7 +460,7 @@ public class MainJFrame extends javax.swing.JFrame {
         patternsPanel.setLayout(patternsPanelLayout);
         patternsPanelLayout.setHorizontalGroup(
             patternsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 471, Short.MAX_VALUE)
+            .addGap(0, 507, Short.MAX_VALUE)
         );
         patternsPanelLayout.setVerticalGroup(
             patternsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -519,17 +484,22 @@ public class MainJFrame extends javax.swing.JFrame {
         btnReset.setMinimumSize(new java.awt.Dimension(23, 23));
         btnReset.setPreferredSize(new java.awt.Dimension(23, 23));
 
+        fileBrowser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                fileBrowserPropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(fileBrowser, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
-                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 476, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
+                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 512, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(btnPreview)
@@ -539,11 +509,11 @@ public class MainJFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(fileBrowser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -560,77 +530,23 @@ public class MainJFrame extends javax.swing.JFrame {
         setBounds((screenSize.width-671)/2, (screenSize.height-510)/2, 671, 510);
     }// </editor-fold>//GEN-END:initComponents
 
-private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeValueChanged
-    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-    checkNode(node);
-}//GEN-LAST:event_treeValueChanged
-
-private void treeTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_treeTreeExpanded
-    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-    ((DefaultTableModel) table.getModel()).getDataVector().clear();
-    for (int i = 0; i < node.getChildCount(); i++) {
-        checkNode((DefaultMutableTreeNode) node.getChildAt(i));
-    }
-}//GEN-LAST:event_treeTreeExpanded
-
-private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_treeTreeCollapsed
-}//GEN-LAST:event_treeTreeCollapsed
-
 private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
     processTable();
 }//GEN-LAST:event_btnPreviewActionPerformed
 
-private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
-    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-    ((DefaultTableModel) table.getModel()).getDataVector().clear();
-
-    Object uo = node.getUserObject();
-
-    if (uo instanceof MyFile) {
-        MyFile[] files = ((MyFile) uo).listFiles();
-        for (MyFile myFile : files) {
-            addToTable(myFile);
+private void fileBrowserPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_fileBrowserPropertyChange
+    if (evt.getPropertyName().equals(JFileBrowser.MOUSE_CLICKED)) {
+        ((DefaultTableModel) table.getModel()).getDataVector().clear();
+        Object uo = evt.getNewValue();
+        if (uo instanceof MyFile) {
+            MyFile[] files = ((MyFile) uo).listFiles();
+            for (MyFile myFile : files) {
+                addToTable(myFile);
+            }
         }
     }
-}//GEN-LAST:event_treeMouseClicked
-
-    private void checkNode(DefaultMutableTreeNode node) {
-        DefaultMutableTreeNode rootFile = null;
-        if (node == null) {
-            return;
-        }
-
-        Object nodeInfo = node.getUserObject();
-        if (nodeInfo instanceof String) {
-            File[] roots = File.listRoots();
-            if (top.getChildCount() == 0) {
-                for (int i = 0; i < roots.length; ++i) {
-                    rootFile = new DefaultMutableTreeNode(new MyFile(roots[i]));
-                    if (roots[i].isDirectory()) {
-                        top.add(rootFile);
-                    }
-                }
-            }
-        }
-
-        if ((node.getChildCount() == 0) && (nodeInfo instanceof MyFile) && (((MyFile) nodeInfo).isDirectory())) {
-            File files[] = ((MyFile) nodeInfo).listFiles();
-            if (files == null) {
-                return;
-            }
-
-            for (File file : files) {
-                MyFile f = new MyFile(file);
-                rootFile = new DefaultMutableTreeNode(f);
-                if (f.isDirectory()) {
-                    node.add(rootFile);
-                }
-            }
-
-        }
-
-    }
-
+}//GEN-LAST:event_fileBrowserPropertyChange
+    
     private void addToTable(MyFile f) {
         boolean add = false;
         if (chkShowDir.isSelected()) {
@@ -648,39 +564,6 @@ private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
         if (add) {
             ((DefaultTableModel) table.getModel()).addRow(
                     new Object[]{true, f, ""});
-        }
-    }
-
-    class MyFile extends File {
-
-        public MyFile(File pathname) {
-            super(pathname.getPath());
-        }
-        
-        public MyFile(String parent, String child) {
-            super(parent,child);
-        }
-        
-
-
-        @Override
-        public String toString() {
-            String s = getName();
-            return s.equals("") ? getPath() : s;
-        }
-
-        @Override
-        public MyFile[] listFiles() {
-            String[] ss = list();
-            if (ss == null) {
-                return null;
-            }
-            int n = ss.length;
-            MyFile[] fs = new MyFile[n];
-            for (int i = 0; i < n; i++) {
-                fs[i] = new MyFile(this.getPath(),ss[i]);
-            }
-            return fs;
         }
     }
 
@@ -748,11 +631,11 @@ private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
     private javax.swing.JComboBox cmbCaseReplace;
     private javax.swing.JComboBox cmbSpaces;
     private javax.swing.JPanel eniesPanel;
+    private com.cartiec.jrenamer.JFileBrowser fileBrowser;
     private javax.swing.JPanel insertDeletePanel;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lblDeleteTo;
     private javax.swing.JLabel lblFrom;
@@ -776,7 +659,6 @@ private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
     private javax.swing.JSpinner spUpperTo;
     private javax.swing.JTable table;
     private javax.swing.JTabbedPane tbPaneConversions;
-    private javax.swing.JTree tree;
     private javax.swing.JTextField txfDelete;
     private javax.swing.JTextField txfInsert;
     private javax.swing.JTextField txfReplaceThis;
