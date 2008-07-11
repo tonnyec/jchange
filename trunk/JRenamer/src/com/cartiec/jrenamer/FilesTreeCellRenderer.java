@@ -17,9 +17,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 public class FilesTreeCellRenderer extends DefaultTreeCellRenderer {
 
     public FilesTreeCellRenderer() {
-        setLeafIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder.png")));
-        setOpenIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/document-open.png")));
-        setClosedIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder.png")));
+        setLeafIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/folder.png")));
+        setOpenIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/document-open.png")));
+        setClosedIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/folder.png")));
     }
 
     @Override

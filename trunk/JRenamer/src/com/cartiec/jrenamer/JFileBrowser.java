@@ -17,6 +17,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class JFileBrowser extends javax.swing.JPanel {
     public static String MOUSE_CLICKED = "MOUSE_CLICKED";
     DefaultMutableTreeNode top = null;
+    
+    private File selectetFile = new File("");
+
+    public File getSelectetFile() {
+        return selectetFile;
+    }
 
     /** Creates new form JFileBrowser */
     public JFileBrowser() {
@@ -65,7 +71,9 @@ public class JFileBrowser extends javax.swing.JPanel {
 
 private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-    firePropertyChange(MOUSE_CLICKED, null,node.getUserObject() );
+    Object o = node.getUserObject();
+    selectetFile = (o instanceof File) ? (File) o : null;
+    firePropertyChange(MOUSE_CLICKED, null,selectetFile );
 }//GEN-LAST:event_treeMouseClicked
 
 private void treeTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_treeTreeExpanded

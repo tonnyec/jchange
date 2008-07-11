@@ -4,7 +4,6 @@
  */
 package com.cartiec.jrenamer;
 
-import com.sun.org.apache.bcel.internal.generic.Select;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
