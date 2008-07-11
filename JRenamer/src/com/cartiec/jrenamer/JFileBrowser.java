@@ -9,7 +9,6 @@ package com.cartiec.jrenamer;
 import java.io.File;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
  *
@@ -21,15 +20,10 @@ public class JFileBrowser extends javax.swing.JPanel {
 
     /** Creates new form JFileBrowser */
     public JFileBrowser() {
-        
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/JFileBrowser"); // NOI18N
         top = new DefaultMutableTreeNode(bundle.getString("raiz"));
         initComponents();
-        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-        renderer.setLeafIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder.png")));
-        renderer.setOpenIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/document-open.png")));
-        renderer.setClosedIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/folder.png")));
-        tree.setCellRenderer(renderer);
+        tree.setCellRenderer(new FilesTreeCellRenderer());
     }
 
     /** This method is called from within the constructor to
@@ -98,7 +92,7 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
             File[] roots = File.listRoots();
             if (top.getChildCount() == 0) {
                 for (int i = 0; i < roots.length; ++i) {
-                    rootFile = new DefaultMutableTreeNode(new MyFile(roots[i]));
+                    rootFile = new DefaultMutableTreeNode(roots[i]);
                     if (roots[i].isDirectory()) {
                         top.add(rootFile);
                     }
@@ -106,15 +100,14 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
             }
         }
 
-        if ((node.getChildCount() == 0) && (nodeInfo instanceof MyFile) && (((MyFile) nodeInfo).isDirectory())) {
-            File files[] = ((MyFile) nodeInfo).listFiles();
+        if ((node.getChildCount() == 0) && (nodeInfo instanceof File) && (((File) nodeInfo).isDirectory())) {
+            File files[] = ((File) nodeInfo).listFiles();
             if (files == null) {
                 return;
             }
             for (File file : files) {
-                MyFile f = new MyFile(file);
-                rootFile = new DefaultMutableTreeNode(f);
-                if (f.isDirectory()) {
+                rootFile = new DefaultMutableTreeNode(file);
+                if (file.isDirectory()) {
                     node.add(rootFile);
                 }
             }
