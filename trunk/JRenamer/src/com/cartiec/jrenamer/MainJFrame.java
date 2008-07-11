@@ -5,6 +5,7 @@
  */
 package com.cartiec.jrenamer;
 
+import java.io.File;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +19,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     DefaultComboBoxModel cmbCaseReplaceModel = null;
     DefaultComboBoxModel cmbSpacesModel = null;
+    FilesCellRenderer fcrenderer = new FilesCellRenderer();
 
     public MainJFrame() {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame");
@@ -48,6 +50,10 @@ public class MainJFrame extends javax.swing.JFrame {
         column.setPreferredWidth(70);
         column.setMaxWidth(70);
         table.getTableHeader().setReorderingAllowed(false);
+        table.setDefaultRenderer(String.class, fcrenderer);
+        table.setDefaultRenderer(Boolean.class, fcrenderer);
+        table.setDefaultRenderer(Object.class, fcrenderer);
+        
 
     }
 
@@ -499,7 +505,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
-                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 512, Short.MAX_VALUE)
+                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(btnPreview)
@@ -509,10 +515,10 @@ public class MainJFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(fileBrowser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fileBrowser, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -538,16 +544,16 @@ private void fileBrowserPropertyChange(java.beans.PropertyChangeEvent evt) {//GE
     if (evt.getPropertyName().equals(JFileBrowser.MOUSE_CLICKED)) {
         ((DefaultTableModel) table.getModel()).getDataVector().clear();
         Object uo = evt.getNewValue();
-        if (uo instanceof MyFile) {
-            MyFile[] files = ((MyFile) uo).listFiles();
-            for (MyFile myFile : files) {
+        if (uo instanceof File) {
+            File[] files = ((File) uo).listFiles();
+            for (File myFile : files) {
                 addToTable(myFile);
             }
         }
     }
 }//GEN-LAST:event_fileBrowserPropertyChange
     
-    private void addToTable(MyFile f) {
+    private void addToTable(File f) {
         boolean add = false;
         if (chkShowDir.isSelected()) {
             if (f.isDirectory()) {
@@ -573,13 +579,13 @@ private void fileBrowserPropertyChange(java.beans.PropertyChangeEvent evt) {//GE
     private void processTable() {
         Vector<Vector> data = ((DefaultTableModel) table.getModel()).getDataVector();
         Boolean check;
-        MyFile file;
+        File file;
         String newName;
         int i = 0;
         for (Vector objects : data) {
             if (objects != null) {
                 check = (Boolean) objects.get(0);
-                file = (MyFile) objects.get(1);
+                file = (File) objects.get(1);
                 if (check) {
                     newName = renameItem(file.toString());
                     data.get(i).set(2, newName);
