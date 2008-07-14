@@ -5,10 +5,19 @@
  */
 package com.cartiec.jrenamer;
 
+import java.awt.Component;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -18,6 +27,7 @@ import javax.swing.table.TableColumn;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
+    HashMap<File, File> filesRenamed = new HashMap<File, File>();
     DefaultComboBoxModel cmbCaseReplaceModel = null;
     DefaultComboBoxModel cmbSpacesModel = null;
     FilesCellRenderer fcrenderer = new FilesCellRenderer();
@@ -68,7 +78,7 @@ public class MainJFrame extends javax.swing.JFrame {
         btnGroupExtensions = new javax.swing.ButtonGroup();
         btnGroupEnies = new javax.swing.ButtonGroup();
         fileBrowser = new com.cartiec.jrenamer.JFileBrowser();
-        jPanel2 = new javax.swing.JPanel();
+        centerPane = new javax.swing.JPanel();
         tableView = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         tbPaneConversions = new javax.swing.JTabbedPane();
@@ -89,7 +99,7 @@ public class MainJFrame extends javax.swing.JFrame {
         replacePanel = new javax.swing.JPanel();
         chkReplace = new javax.swing.JCheckBox();
         txfReplaceThis = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        txfReplaceWith = new javax.swing.JTextField();
         lblWith = new javax.swing.JLabel();
         chkSpaces = new javax.swing.JCheckBox();
         cmbSpaces = new javax.swing.JComboBox();
@@ -98,22 +108,28 @@ public class MainJFrame extends javax.swing.JFrame {
         chkEnies = new javax.swing.JCheckBox();
         rbtnNi = new javax.swing.JRadioButton();
         rbtnN = new javax.swing.JRadioButton();
-        insertDeletePanel = new javax.swing.JPanel();
+        insertPanel = new javax.swing.JPanel();
         chkInsert = new javax.swing.JCheckBox();
         txfInsert = new javax.swing.JTextField();
         lblIn = new javax.swing.JLabel();
         spPosInsert = new javax.swing.JSpinner();
         chkInsertEnd = new javax.swing.JCheckBox();
+        chkInsertNumbers = new javax.swing.JCheckBox();
+        lblNumberIn = new javax.swing.JLabel();
+        spPosAutoNumber = new javax.swing.JSpinner();
+        lblStartAutoNumber = new javax.swing.JLabel();
+        spStartAutoNumber = new javax.swing.JSpinner();
+        chkEqualLenDigits = new javax.swing.JCheckBox();
+        deletePanel = new javax.swing.JPanel();
         chkDeleteFrom = new javax.swing.JCheckBox();
         spDeleteFrom = new javax.swing.JSpinner();
         lblDeleteTo = new javax.swing.JLabel();
         spDeleteTo = new javax.swing.JSpinner();
         chkDeleteToEnd = new javax.swing.JCheckBox();
         chkDeleteChars = new javax.swing.JCheckBox();
-        txfDelete = new javax.swing.JTextField();
         chkDeleteBrackets = new javax.swing.JCheckBox();
         chkDeleteMoreOneSpaces = new javax.swing.JCheckBox();
-        patternsPanel = new javax.swing.JPanel();
+        txfDelete = new javax.swing.JTextField();
         btnPreview = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         chkShowDir = new javax.swing.JCheckBox();
@@ -121,8 +137,11 @@ public class MainJFrame extends javax.swing.JFrame {
         chkSelectAll = new javax.swing.JCheckBox();
         btnRename = new javax.swing.JButton();
         btnUndo = new javax.swing.JButton();
+        txfExtension = new javax.swing.JTextField();
+        lblExtension = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("JRenamer");
 
         fileBrowser.setPreferredSize(new java.awt.Dimension(150, 322));
         fileBrowser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -320,12 +339,12 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         replacePanel.add(txfReplaceThis, gridBagConstraints);
 
-        jTextField2.setPreferredSize(new java.awt.Dimension(80, 20));
+        txfReplaceWith.setPreferredSize(new java.awt.Dimension(80, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        replacePanel.add(jTextField2, gridBagConstraints);
+        replacePanel.add(txfReplaceWith, gridBagConstraints);
 
         lblWith.setText(bundle.getString("con")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -374,13 +393,13 @@ public class MainJFrame extends javax.swing.JFrame {
 
         tbPaneConversions.addTab(bundle.getString("reemplazar"), replacePanel); // NOI18N
 
-        insertDeletePanel.setLayout(new java.awt.GridBagLayout());
+        insertPanel.setLayout(new java.awt.GridBagLayout());
 
         chkInsert.setText(bundle.getString("insertar")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
-        insertDeletePanel.add(chkInsert, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        insertPanel.add(chkInsert, gridBagConstraints);
 
         txfInsert.setPreferredSize(new java.awt.Dimension(70, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -388,15 +407,14 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
-        insertDeletePanel.add(txfInsert, gridBagConstraints);
+        insertPanel.add(txfInsert, gridBagConstraints);
 
         lblIn.setText(bundle.getString("en")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 5);
-        insertDeletePanel.add(lblIn, gridBagConstraints);
+        insertPanel.add(lblIn, gridBagConstraints);
 
         spPosInsert.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         spPosInsert.setPreferredSize(new java.awt.Dimension(40, 20));
@@ -405,15 +423,69 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
-        insertDeletePanel.add(spPosInsert, gridBagConstraints);
+        insertPanel.add(spPosInsert, gridBagConstraints);
 
         chkInsertEnd.setText(bundle.getString("o al final")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
-        insertDeletePanel.add(chkInsertEnd, gridBagConstraints);
+        insertPanel.add(chkInsertEnd, gridBagConstraints);
+
+        chkInsertNumbers.setText(bundle.getString("Insertar Números")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        insertPanel.add(chkInsertNumbers, gridBagConstraints);
+
+        lblNumberIn.setText(bundle.getString("en")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        insertPanel.add(lblNumberIn, gridBagConstraints);
+
+        spPosAutoNumber.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        spPosAutoNumber.setPreferredSize(new java.awt.Dimension(40, 20));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+        insertPanel.add(spPosAutoNumber, gridBagConstraints);
+
+        lblStartAutoNumber.setText(bundle.getString("iniciar en")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+        insertPanel.add(lblStartAutoNumber, gridBagConstraints);
+
+        spStartAutoNumber.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        spStartAutoNumber.setPreferredSize(new java.awt.Dimension(40, 20));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+        insertPanel.add(spStartAutoNumber, gridBagConstraints);
+
+        chkEqualLenDigits.setText(bundle.getString("crear siempre con digitos iguales")); // NOI18N
+        chkEqualLenDigits.setToolTipText("<html>\n01, 02, 03<br>\n001, 002, 003\n</html>");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        insertPanel.add(chkEqualLenDigits, gridBagConstraints);
+
+        tbPaneConversions.addTab(bundle.getString("Insertar"), insertPanel); // NOI18N
+
+        deletePanel.setLayout(new java.awt.GridBagLayout());
 
         chkDeleteFrom.setText(bundle.getString("Eliminar desde")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -421,7 +493,7 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
-        insertDeletePanel.add(chkDeleteFrom, gridBagConstraints);
+        deletePanel.add(chkDeleteFrom, gridBagConstraints);
 
         spDeleteFrom.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         spDeleteFrom.setPreferredSize(new java.awt.Dimension(40, 20));
@@ -430,7 +502,7 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
-        insertDeletePanel.add(spDeleteFrom, gridBagConstraints);
+        deletePanel.add(spDeleteFrom, gridBagConstraints);
 
         lblDeleteTo.setText(bundle.getString("hasta")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -438,7 +510,7 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 5);
-        insertDeletePanel.add(lblDeleteTo, gridBagConstraints);
+        deletePanel.add(lblDeleteTo, gridBagConstraints);
 
         spDeleteTo.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         spDeleteTo.setPreferredSize(new java.awt.Dimension(40, 20));
@@ -447,7 +519,7 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
-        insertDeletePanel.add(spDeleteTo, gridBagConstraints);
+        deletePanel.add(spDeleteTo, gridBagConstraints);
 
         chkDeleteToEnd.setText(bundle.getString("o hasta el final")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -456,7 +528,7 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
-        insertDeletePanel.add(chkDeleteToEnd, gridBagConstraints);
+        deletePanel.add(chkDeleteToEnd, gridBagConstraints);
 
         chkDeleteChars.setText(bundle.getString("Eliminar todo")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -464,7 +536,25 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
-        insertDeletePanel.add(chkDeleteChars, gridBagConstraints);
+        deletePanel.add(chkDeleteChars, gridBagConstraints);
+
+        chkDeleteBrackets.setText(bundle.getString("Eliminar parentesis")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
+        deletePanel.add(chkDeleteBrackets, gridBagConstraints);
+
+        chkDeleteMoreOneSpaces.setText(bundle.getString("Eliminar espacios dobles")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
+        deletePanel.add(chkDeleteMoreOneSpaces, gridBagConstraints);
 
         txfDelete.setPreferredSize(new java.awt.Dimension(70, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -474,40 +564,9 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
-        insertDeletePanel.add(txfDelete, gridBagConstraints);
+        deletePanel.add(txfDelete, gridBagConstraints);
 
-        chkDeleteBrackets.setText(bundle.getString("Eliminar parentesis")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
-        insertDeletePanel.add(chkDeleteBrackets, gridBagConstraints);
-
-        chkDeleteMoreOneSpaces.setText(bundle.getString("Eliminar espacios dobles")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
-        insertDeletePanel.add(chkDeleteMoreOneSpaces, gridBagConstraints);
-
-        tbPaneConversions.addTab(bundle.getString("Insertar/Eliminar"), insertDeletePanel); // NOI18N
-
-        javax.swing.GroupLayout patternsPanelLayout = new javax.swing.GroupLayout(patternsPanel);
-        patternsPanel.setLayout(patternsPanelLayout);
-        patternsPanelLayout.setHorizontalGroup(
-            patternsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 504, Short.MAX_VALUE)
-        );
-        patternsPanelLayout.setVerticalGroup(
-            patternsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 107, Short.MAX_VALUE)
-        );
-
-        tbPaneConversions.addTab(bundle.getString("patrones"), patternsPanel); // NOI18N
+        tbPaneConversions.addTab(bundle.getString("Eliminar"), deletePanel); // NOI18N
 
         btnPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/edit-find.png"))); // NOI18N
         btnPreview.setText(bundle.getString("vistaPrevia")); // NOI18N
@@ -523,6 +582,11 @@ public class MainJFrame extends javax.swing.JFrame {
         btnReset.setMaximumSize(new java.awt.Dimension(23, 23));
         btnReset.setMinimumSize(new java.awt.Dimension(23, 23));
         btnReset.setPreferredSize(new java.awt.Dimension(50, 23));
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
 
         chkShowDir.setSelected(true);
         chkShowDir.setText(bundle.getString("mostrarDirectorios")); // NOI18N
@@ -550,7 +614,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
         btnRename.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/document-save.png"))); // NOI18N
         btnRename.setText(bundle.getString("Renombrar")); // NOI18N
-        btnRename.setToolTipText(bundle.getString("reiniciar")); // NOI18N
         btnRename.setMaximumSize(new java.awt.Dimension(23, 23));
         btnRename.setMinimumSize(new java.awt.Dimension(23, 23));
         btnRename.setPreferredSize(new java.awt.Dimension(50, 23));
@@ -562,7 +625,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
         btnUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/edit-undo.png"))); // NOI18N
         btnUndo.setText(bundle.getString("Deshacer")); // NOI18N
-        btnUndo.setToolTipText(bundle.getString("reiniciar")); // NOI18N
         btnUndo.setMaximumSize(new java.awt.Dimension(23, 23));
         btnUndo.setMinimumSize(new java.awt.Dimension(23, 23));
         btnUndo.setPreferredSize(new java.awt.Dimension(50, 23));
@@ -572,58 +634,80 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        txfExtension.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txfExtensionMouseClicked(evt);
+            }
+        });
+        txfExtension.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txfExtensionKeyReleased(evt);
+            }
+        });
+
+        lblExtension.setText(bundle.getString("extensión")); // NOI18N
+
+        javax.swing.GroupLayout centerPaneLayout = new javax.swing.GroupLayout(centerPane);
+        centerPane.setLayout(centerPaneLayout);
+        centerPaneLayout.setHorizontalGroup(
+            centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(centerPaneLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tableView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(centerPaneLayout.createSequentialGroup()
+                        .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, centerPaneLayout.createSequentialGroup()
+                                .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnPreview)
                                     .addComponent(chkSelectAll))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(centerPaneLayout.createSequentialGroup()
                                         .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnRename, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(6, 6, 6)
-                                        .addComponent(btnUndo, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(btnRename, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(centerPaneLayout.createSequentialGroup()
                                         .addComponent(chkShowDir)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(chkShowFiles))))
+                                        .addComponent(chkShowFiles)))
+                                .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(centerPaneLayout.createSequentialGroup()
+                                        .addGap(34, 34, 34)
+                                        .addComponent(lblExtension)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txfExtension))
+                                    .addGroup(centerPaneLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnUndo, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))))
                             .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        centerPaneLayout.setVerticalGroup(
+            centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(centerPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPreview)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRename, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUndo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkShowDir)
                     .addComponent(chkSelectAll)
-                    .addComponent(chkShowFiles))
+                    .addComponent(chkShowFiles)
+                    .addComponent(txfExtension, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblExtension))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tableView, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+        getContentPane().add(centerPane, java.awt.BorderLayout.CENTER);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((screenSize.width-719)/2, (screenSize.height-527)/2, 719, 527);
@@ -667,11 +751,29 @@ private void chkShowDirFileActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_chkShowDirFileActionPerformed
 
 private void btnRenameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameActionPerformed
-    renameFiles();
+    if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmaRenombrar"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        renameFiles();
+    }
+
 }//GEN-LAST:event_btnRenameActionPerformed
 
 private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUndoActionPerformed
-}//GEN-LAST:event_btnUndoActionPerformed
+    if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmarDeshacer"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {//GEN-LAST:event_btnUndoActionPerformed
+        deshacer();
+    }
+}                                       
+
+private void txfExtensionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfExtensionKeyReleased
+    refreshTable();
+}//GEN-LAST:event_txfExtensionKeyReleased
+
+private void txfExtensionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txfExtensionMouseClicked
+    txfExtension.selectAll();
+}//GEN-LAST:event_txfExtensionMouseClicked
+
+private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+    restartControls();
+}//GEN-LAST:event_btnResetActionPerformed
     
     /**
      * Add new row to rable
@@ -690,6 +792,12 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 add = true;
             }
         }
+        if(chkShowFiles.isSelected() && (txfExtension.getText().length() > 0)){
+            if (f.isFile()) {
+                String n = f.getName();
+                add = n.endsWith(txfExtension.getText());
+            }
+        }
 
         if (add) {
             ((DefaultTableModel) table.getModel()).addRow(
@@ -701,23 +809,54 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
      * Loop table data - new Object[]{boolean, MyFile, String}
      */
     private void previewTable() {
+        int activeFiles = 0;
+        boolean chkInsertNumbersSelected = chkInsertNumbers.isSelected();
+        boolean chkEqualLenDigitsSelected = chkEqualLenDigits.isSelected();
+        if(chkInsertNumbersSelected){
+            activeFiles = countActiveFiles() + (Integer)spStartAutoNumber.getValue();
+        }
+        
         Vector<Vector> data = ((DefaultTableModel) table.getModel()).getDataVector();
         Boolean check;
         File file;
         String newName;
+        String args = null;
         int i = 0;
+        int j = (Integer)spStartAutoNumber.getValue();
         for (Vector objects : data) {
             if (objects != null) {
                 check = (Boolean) objects.get(0);
                 file = (File) objects.get(1);
                 if (check) {
-                    newName = renameItem(file.getName());
+                    if(chkInsertNumbersSelected && chkEqualLenDigitsSelected){
+                        args = Renamer.getCompleteIndex(activeFiles, j);
+                    }
+                    else if(chkInsertNumbersSelected){
+                        args = String.valueOf(j);
+                    }
+                    newName = renameItem(file.getName(),args);
                     data.get(i).set(2, newName);
+                    j++;
                 }
             }
             i++;
         }
         ((DefaultTableModel) table.getModel()).fireTableDataChanged();
+    }
+    
+    private int countActiveFiles(){
+        Vector<Vector> data = ((DefaultTableModel) table.getModel()).getDataVector();
+        Boolean check;
+        int i = 0;
+        for (Vector objects : data) {
+            if (objects != null) {
+                check = (Boolean) objects.get(0);
+                if (check) {
+                    i++;
+                }
+            }
+        }
+        return i;
     }
     
     private void renameFiles() {
@@ -727,6 +866,7 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         File fileNewName;
         String newName;
         int i = 0;
+        filesRenamed.clear();
         for (Vector objects : data) {
             if (objects != null) {
                 check = (Boolean) objects.get(0);
@@ -734,12 +874,15 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 newName = (String)objects.get(2);
                 if (check) {
                     fileNewName = new File(file.getParent()+ File.separator + newName);
-                    file.renameTo(fileNewName);
+                    boolean rename = file.renameTo(fileNewName);
+                    if(rename){
+                        filesRenamed.put(fileNewName, file);
+                    }
                 }
             }
             i++;
         }
-        ((DefaultTableModel) table.getModel()).fireTableDataChanged();
+        refreshTable();
     }
     
     private void checkRows(boolean value){
@@ -760,13 +903,16 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         File f = fileBrowser.getSelectetFile();
         if (f != null) {
             File[] files =  f.listFiles();
+            if(files == null){
+                return ;
+            }
             for (File myFile : files) {
                 addToTable(myFile);
             }
         }
     }
 
-    private String renameItem(String str) {
+    private String renameItem(String str,String args) {
         if(rbtnUppercase.isSelected()){
             str = Renamer.toUpperCase(str, (Integer)spUpperFrom.getValue(), (Integer)spUpperTo.getValue());
         }
@@ -800,14 +946,134 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             str = Renamer.toExtensionLowercase(str);
         }
         
+        if(chkReplace.isSelected()){
+            str = str.replaceAll(txfReplaceThis.getText(), txfReplaceWith.getText());
+        }
+        
+        if(chkSpaces.isSelected()){
+            Object o = cmbSpaces.getSelectedItem();
+            
+            if(bundle.getString("espaciosAGuionesBajos").equals(o)){ 
+                str = str.replaceAll("\\ ", "\\_");
+            }
+            else if(bundle.getString("guionesBajosAEspacios").equals(o)){ 
+                str = str.replaceAll("\\_", "\\ ");
+            }
+            else if(bundle.getString("espaciosAPuntos").equals(o)){ 
+                str = str.replaceAll("\\ ", "\\.");
+            }
+            else if(bundle.getString("puntosAEspacios").equals(o)){ 
+                str = str.replaceAll("\\.", "\\ ");
+            }
+            else if(bundle.getString("espaciosAGuiones").equals(o)){ 
+                str = str.replaceAll("\\ ", "\\-");
+            }
+            else if(bundle.getString("guionesAEspacios").equals(o)){ 
+                str = str.replaceAll("\\-", "\\ ");
+            }
+        }
+        
+        if(chkAccents.isSelected()){
+            str = Renamer.deleteAccents(str);
+        }
+        
+        if(chkEnies.isSelected()){
+            String p;
+            if(str.indexOf("ñ") >= 0){
+                p = rbtnN.isSelected() ? "n" : "ni";
+                str = str.replaceAll("ñ", p);
+            }
+            else if(str.indexOf("Ñ") >= 0){
+                p = rbtnN.isSelected() ? "N" : "NI";
+                str = str.replaceAll("Ñ", p);
+            }
+        }
+        
+        if(chkInsert.isSelected()){
+            str = Renamer.insert(str, txfInsert.getText(), 
+                    (Integer)spPosInsert.getValue(), chkInsertEnd.isSelected());
+        }
+        
+        if(chkDeleteFrom.isSelected()){
+            str = Renamer.delete(str, (Integer)spDeleteFrom.getValue(), 
+                    (Integer)spDeleteTo.getValue(), chkDeleteToEnd.isSelected());
+        }
+        
+        if(chkDeleteChars.isSelected()){
+            str = str.replaceAll(txfDelete.getText(), "");
+        }
+        
+        if(chkDeleteBrackets.isSelected()){
+            str = str.replaceAll("\\(", "");
+            str = str.replaceAll("\\)", "");
+        }
+        
+        if(chkDeleteMoreOneSpaces.isSelected()){
+            str = Renamer.deleteDobleSpaces(str);
+        }
+        
+        if(chkInsertNumbers.isSelected()){
+            int p =  (Integer)spPosAutoNumber.getValue();
+            if(p > 0){
+                str = Renamer.insert(str, args,p,false);            
+            }
+            else{
+                str = args + str;
+            }
+        }
+
         return str;
+    }
+    
+    private void deshacer(){
+        for (Iterator<File> it = filesRenamed.keySet().iterator(); it.hasNext();) {
+            File fileName = it.next();
+            File oldName = filesRenamed.get(fileName);
+            fileName.renameTo(oldName);
+        }
+        refreshTable();
+    }
+    
+    private void restartControls(){
+        Component[] tabbedPane = tbPaneConversions.getComponents();
+        
+        for (int i = 0; i < tabbedPane.length; i++) {
+            Component component = tabbedPane[i];
+            if (component instanceof JPanel) {
+                Component[] panel = ((JPanel)component).getComponents();
+                for (int j = 0; j < panel.length; j++) {
+                    Component c = panel[j];
+                    if(c instanceof JRadioButton){
+                        ((JRadioButton)c).setSelected(false);   
+                    }
+                    if(c instanceof JSpinner){
+                        ((JSpinner)c).setValue(0);
+                    }
+                    
+                    if(c instanceof JCheckBox){
+                        ((JCheckBox)c).setSelected(false);
+                    }
+                    
+                    if (c instanceof JTextField) {
+                        ((JTextField)c).setText("");
+                    }
+                }
+            }
+        }
+        
+        btnGroupEnies.clearSelection();
+        btnGroupExtensions.clearSelection();
+        btnGroupUpperLower.clearSelection();
+        chkEnies.setSelected(false);
+        
+        rbtnNi.setSelected(true);
+        spDeleteTo.setValue(1);
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-
 
         java.awt.EventQueue.invokeLater(new Runnable() {
 
@@ -825,6 +1091,7 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JButton btnRename;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUndo;
+    private javax.swing.JPanel centerPane;
     private javax.swing.JPanel changeCasePanel;
     private javax.swing.JCheckBox chkAccents;
     private javax.swing.JCheckBox chkCaseReplace;
@@ -834,8 +1101,10 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JCheckBox chkDeleteMoreOneSpaces;
     private javax.swing.JCheckBox chkDeleteToEnd;
     private javax.swing.JCheckBox chkEnies;
+    private javax.swing.JCheckBox chkEqualLenDigits;
     private javax.swing.JCheckBox chkInsert;
     private javax.swing.JCheckBox chkInsertEnd;
+    private javax.swing.JCheckBox chkInsertNumbers;
     private javax.swing.JCheckBox chkReplace;
     private javax.swing.JCheckBox chkSelectAll;
     private javax.swing.JCheckBox chkShowDir;
@@ -843,17 +1112,18 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JCheckBox chkSpaces;
     private javax.swing.JComboBox cmbCaseReplace;
     private javax.swing.JComboBox cmbSpaces;
+    private javax.swing.JPanel deletePanel;
     private javax.swing.JPanel eniesPanel;
     private com.cartiec.jrenamer.JFileBrowser fileBrowser;
-    private javax.swing.JPanel insertDeletePanel;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JPanel insertPanel;
     private javax.swing.JLabel lblDeleteTo;
+    private javax.swing.JLabel lblExtension;
     private javax.swing.JLabel lblFrom;
     private javax.swing.JLabel lblIn;
+    private javax.swing.JLabel lblNumberIn;
+    private javax.swing.JLabel lblStartAutoNumber;
     private javax.swing.JLabel lblTo;
     private javax.swing.JLabel lblWith;
-    private javax.swing.JPanel patternsPanel;
     private javax.swing.JRadioButton rbtnLowerExtension;
     private javax.swing.JRadioButton rbtnLowercase;
     private javax.swing.JRadioButton rbtnN;
@@ -865,7 +1135,9 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JSpinner spDeleteTo;
     private javax.swing.JSpinner spLowerFrom;
     private javax.swing.JSpinner spLowerTo;
+    private javax.swing.JSpinner spPosAutoNumber;
     private javax.swing.JSpinner spPosInsert;
+    private javax.swing.JSpinner spStartAutoNumber;
     private javax.swing.JSpinner spUpperFrom;
     private javax.swing.JSpinner spUpperTo;
     private javax.swing.JTable table;
@@ -873,7 +1145,9 @@ private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JTabbedPane tbPaneConversions;
     private javax.swing.JTextField txfDelete;
     private javax.swing.JTextField txfDelim;
+    private javax.swing.JTextField txfExtension;
     private javax.swing.JTextField txfInsert;
     private javax.swing.JTextField txfReplaceThis;
+    private javax.swing.JTextField txfReplaceWith;
     // End of variables declaration//GEN-END:variables
 }
