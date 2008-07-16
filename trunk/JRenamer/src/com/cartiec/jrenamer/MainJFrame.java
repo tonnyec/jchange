@@ -5,12 +5,18 @@
  */
 package com.cartiec.jrenamer;
 
+import com.cartiec.jrenamer.tags.TagID3;
 import java.awt.Component;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -27,6 +33,7 @@ import javax.swing.table.TableColumn;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
+    public static Logger LOG = Logger.getLogger("log.txt");
     HashMap<File, File> filesRenamed = new HashMap<File, File>();
     DefaultComboBoxModel cmbCaseReplaceModel = null;
     DefaultComboBoxModel cmbSpacesModel = null;
@@ -34,6 +41,18 @@ public class MainJFrame extends javax.swing.JFrame {
     ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame");
 
     public MainJFrame() {
+
+        try {
+            FileHandler logFile = new FileHandler("log.txt");
+            logFile.setFormatter(new SimpleFormatter());
+            LOG.addHandler(logFile);
+            LOG.info("Inicia la aplicacion");
+
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
 
         cmbCaseReplaceModel = new javax.swing.DefaultComboBoxModel(
                 new String[]{
@@ -77,6 +96,7 @@ public class MainJFrame extends javax.swing.JFrame {
         btnGroupUpperLower = new javax.swing.ButtonGroup();
         btnGroupExtensions = new javax.swing.ButtonGroup();
         btnGroupEnies = new javax.swing.ButtonGroup();
+        popupMenu = new javax.swing.JPopupMenu();
         fileBrowser = new com.cartiec.jrenamer.JFileBrowser();
         centerPane = new javax.swing.JPanel();
         tableView = new javax.swing.JScrollPane();
@@ -130,6 +150,8 @@ public class MainJFrame extends javax.swing.JFrame {
         chkDeleteBrackets = new javax.swing.JCheckBox();
         chkDeleteMoreOneSpaces = new javax.swing.JCheckBox();
         txfDelete = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        chkShowTag = new javax.swing.JCheckBox();
         btnPreview = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         chkShowDir = new javax.swing.JCheckBox();
@@ -172,6 +194,11 @@ public class MainJFrame extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
             }
         });
         tableView.setViewportView(table);
@@ -568,6 +595,13 @@ public class MainJFrame extends javax.swing.JFrame {
 
         tbPaneConversions.addTab(bundle.getString("Eliminar"), deletePanel); // NOI18N
 
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        chkShowTag.setText(bundle.getString("Mostrar Tags con un clic")); // NOI18N
+        jPanel1.add(chkShowTag, new java.awt.GridBagConstraints());
+
+        tbPaneConversions.addTab(bundle.getString("Música"), jPanel1); // NOI18N
+
         btnPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/edit-find.png"))); // NOI18N
         btnPreview.setText(bundle.getString("vistaPrevia")); // NOI18N
         btnPreview.addActionListener(new java.awt.event.ActionListener() {
@@ -604,7 +638,6 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
-        chkSelectAll.setSelected(true);
         chkSelectAll.setText(bundle.getString("Seleccionar Todos")); // NOI18N
         chkSelectAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -742,38 +775,53 @@ public class MainJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_rbtnExtensionMouseClicked
 
-private void chkSelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSelectAllActionPerformed
-    checkRows(chkSelectAll.isSelected());
-}//GEN-LAST:event_chkSelectAllActionPerformed
+    private void chkSelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSelectAllActionPerformed
+        checkRows(chkSelectAll.isSelected());
+    }//GEN-LAST:event_chkSelectAllActionPerformed
 
-private void chkShowDirFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkShowDirFileActionPerformed
-    refreshTable();
-}//GEN-LAST:event_chkShowDirFileActionPerformed
+    private void chkShowDirFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkShowDirFileActionPerformed
+        refreshTable();
+    }//GEN-LAST:event_chkShowDirFileActionPerformed
 
-private void btnRenameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameActionPerformed
-    if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmaRenombrar"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-        renameFiles();
+    private void btnRenameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameActionPerformed
+        if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmaRenombrar"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            renameFiles();
+        }
+    }//GEN-LAST:event_btnRenameActionPerformed
+
+    private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUndoActionPerformed
+		if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmarDeshacer"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {//GEN-LAST:event_btnUndoActionPerformed
+            deshacer();
+        }
     }
 
-}//GEN-LAST:event_btnRenameActionPerformed
+    private void txfExtensionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfExtensionKeyReleased
+        refreshTable();
+    }//GEN-LAST:event_txfExtensionKeyReleased
 
-private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUndoActionPerformed
-    if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmarDeshacer"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {//GEN-LAST:event_btnUndoActionPerformed
-        deshacer();
+    private void txfExtensionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txfExtensionMouseClicked
+        txfExtension.selectAll();
+    }//GEN-LAST:event_txfExtensionMouseClicked
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        restartControls();
+    }//GEN-LAST:event_btnResetActionPerformed
+
+private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+    if (chkShowTag.isSelected()) {
+        int r = table.getSelectedRow();
+        File f = (File) ((DefaultTableModel) table.getModel()).getValueAt(r, 1);
+        TagID3 tag = new TagID3();
+        tag.readTags(f);
+        TagJPanel tagJPanel = new TagJPanel();
+        if(tagJPanel.load(tag)){
+            popupMenu.removeAll();
+            popupMenu.add(tagJPanel);
+            popupMenu.show(table, evt.getX() + 15 , 
+                    evt.getY() - 100);
+        }
     }
-}                                       
-
-private void txfExtensionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfExtensionKeyReleased
-    refreshTable();
-}//GEN-LAST:event_txfExtensionKeyReleased
-
-private void txfExtensionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txfExtensionMouseClicked
-    txfExtension.selectAll();
-}//GEN-LAST:event_txfExtensionMouseClicked
-
-private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-    restartControls();
-}//GEN-LAST:event_btnResetActionPerformed
+}//GEN-LAST:event_tableMouseClicked
     
     /**
      * Add new row to rable
@@ -1109,6 +1157,7 @@ private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JCheckBox chkSelectAll;
     private javax.swing.JCheckBox chkShowDir;
     private javax.swing.JCheckBox chkShowFiles;
+    private javax.swing.JCheckBox chkShowTag;
     private javax.swing.JCheckBox chkSpaces;
     private javax.swing.JComboBox cmbCaseReplace;
     private javax.swing.JComboBox cmbSpaces;
@@ -1116,6 +1165,7 @@ private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JPanel eniesPanel;
     private com.cartiec.jrenamer.JFileBrowser fileBrowser;
     private javax.swing.JPanel insertPanel;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblDeleteTo;
     private javax.swing.JLabel lblExtension;
     private javax.swing.JLabel lblFrom;
@@ -1124,6 +1174,7 @@ private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JLabel lblStartAutoNumber;
     private javax.swing.JLabel lblTo;
     private javax.swing.JLabel lblWith;
+    private javax.swing.JPopupMenu popupMenu;
     private javax.swing.JRadioButton rbtnLowerExtension;
     private javax.swing.JRadioButton rbtnLowercase;
     private javax.swing.JRadioButton rbtnN;
