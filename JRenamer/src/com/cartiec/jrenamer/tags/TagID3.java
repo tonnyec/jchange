@@ -34,12 +34,15 @@ import org.blinkenlights.jid3.v2.ID3V2_3_0Tag;
  * @author Tonny
  */
 public class TagID3 {
-    private ID3V1_0Tag id3v1_0Tag;
-    private ID3V2_3_0Tag id3v2_3_0Tag;
+    private ID3V1_0Tag id3v1_0Tag = null;
+    private ID3V2_3_0Tag id3v2_3_0Tag = null;
     private File file = new File("");
 
     public void readTags(File file) {
         this.file = file;
+        if(!file.getName().toUpperCase().endsWith(".MP3")){
+            return ;
+        }
         MediaFile mediaFile = new MP3File(file);
         try {
             for (Object obj : mediaFile.getTags()) {
