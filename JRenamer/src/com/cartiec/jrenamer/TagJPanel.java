@@ -17,6 +17,13 @@ import org.blinkenlights.jid3.v2.ID3V2_3_0Tag;
  */
 public class TagJPanel extends javax.swing.JPanel {
 
+    private String title = null;
+    private String artist = null;
+    private String album = null;
+    private String genre = null;
+    private String year = null;  
+    private String comment = null;
+
     /** Creates new form TagJPanel */
     public TagJPanel() {
         initComponents();
@@ -25,14 +32,6 @@ public class TagJPanel extends javax.swing.JPanel {
     public boolean load(TagID3 tag) {
         ID3V1_0Tag v1 = tag.getId3v1_0Tag();
         ID3V2_3_0Tag v2 = tag.getId3v2_3_0Tag();
-        String title = null,
-                artist = null,
-                album = null,
-                genre = null,
-                year = null,
-                comment = null;
-
-
         if (v2 != null) {
             title = v2.getTitle();
             artist = v2.getArtist();
@@ -57,7 +56,7 @@ public class TagJPanel extends javax.swing.JPanel {
             }
             if ((genre == null) || ((genre != null) && (genre.equals("")))) {
                 Genre g = v1.getGenre();
-                if(g != null){
+                if (g != null) {
                     genre = g.toString();
                 }
             }
@@ -68,7 +67,7 @@ public class TagJPanel extends javax.swing.JPanel {
                 comment = v1.getComment();
             }
         }
-        
+
         txfTitle.setText(title);
         txfArtist.setText(artist);
         txfAlbum.setText(album);

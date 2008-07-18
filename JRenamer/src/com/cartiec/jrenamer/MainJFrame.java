@@ -9,7 +9,8 @@ import com.cartiec.jrenamer.tags.TagID3;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ResourceBundle;
@@ -18,6 +19,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -29,6 +31,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import jexifviewer.JIfdData;
 
 /**
  *
@@ -42,6 +45,8 @@ public class MainJFrame extends javax.swing.JFrame {
     DefaultComboBoxModel cmbSpacesModel = null;
     FilesCellRenderer fcrenderer = new FilesCellRenderer();
     ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame");
+    AbstractListModel lstTagId3Model;
+    AbstractListModel lstExifModel;
 
     public MainJFrame() {
 
@@ -74,7 +79,52 @@ public class MainJFrame extends javax.swing.JFrame {
                     bundle.getString("espaciosAGuiones"),
                     bundle.getString("guionesAEspacios")
                 });
+        //Tag List
+        lstTagId3Model = new AbstractListModel() {
 
+            String2[] strings = {
+                new String2("{album}", bundle.getString("Album")),
+                new String2("{artist}", bundle.getString("Artista")),
+                new String2("{title}", bundle.getString("Título")),
+                new String2("{genre}", bundle.getString("Género")),
+                new String2("{year}", bundle.getString("Año"))
+            };
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public String2 getElementAt(int i) {
+                return strings[i];
+            }
+        };
+
+        //Tag List
+        lstExifModel = new AbstractListModel() {
+
+            String2[] strings = {
+                new String2("{width}", bundle.getString("Ancho")),
+                new String2("{height}", bundle.getString("Alto")),
+                new String2("{dpih}", bundle.getString("DPI horizontal")),
+                new String2("{dpiv}", bundle.getString("DPI vertical")),
+                new String2("{make}", bundle.getString("Cámara")),
+                new String2("{model}", bundle.getString("Modelo")),
+                new String2("{year}", bundle.getString("Año")),
+                new String2("{month}", bundle.getString("Mes")),
+                new String2("{day}", bundle.getString("Día")),
+                new String2("{hour}", bundle.getString("Hora")),
+                new String2("{min}", bundle.getString("Minuto")),
+                new String2("{sec}", bundle.getString("Segundo"))
+            };
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public String2 getElementAt(int i) {
+                return strings[i];
+            }
+        };
 
         initComponents();
 
@@ -153,8 +203,21 @@ public class MainJFrame extends javax.swing.JFrame {
         chkDeleteBrackets = new javax.swing.JCheckBox();
         chkDeleteMoreOneSpaces = new javax.swing.JCheckBox();
         txfDelete = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
+        musicPanel = new javax.swing.JPanel();
         chkShowTag = new javax.swing.JCheckBox();
+        lstTagId3View = new javax.swing.JScrollPane();
+        lstTagId3 = new javax.swing.JList();
+        txfTag = new javax.swing.JTextField();
+        chkRenameWithTag = new javax.swing.JCheckBox();
+        btnSpaceGuionSpace = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        chkShowExif = new javax.swing.JCheckBox();
+        lstExifView = new javax.swing.JScrollPane();
+        lstExif = new javax.swing.JList();
+        chkRenameWithExif = new javax.swing.JCheckBox();
+        btnSpaceGuionSpace1 = new javax.swing.JButton();
+        txfExif = new javax.swing.JTextField();
+        txfRenameWithDate = new javax.swing.JCheckBox();
         btnPreview = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         chkShowDir = new javax.swing.JCheckBox();
@@ -598,12 +661,140 @@ public class MainJFrame extends javax.swing.JFrame {
 
         tbPaneConversions.addTab(bundle.getString("Eliminar"), deletePanel); // NOI18N
 
-        jPanel1.setLayout(new java.awt.GridBagLayout());
-
         chkShowTag.setText(bundle.getString("Mostrar Tags con un clic")); // NOI18N
-        jPanel1.add(chkShowTag, new java.awt.GridBagConstraints());
 
-        tbPaneConversions.addTab(bundle.getString("Música"), jPanel1); // NOI18N
+        lstTagId3.setModel(lstTagId3Model);
+        lstTagId3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstTagId3MouseClicked(evt);
+            }
+        });
+        lstTagId3View.setViewportView(lstTagId3);
+
+        txfTag.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txfTagMouseClicked(evt);
+            }
+        });
+
+        chkRenameWithTag.setText(bundle.getString("Renombrar con este patrón")); // NOI18N
+
+        btnSpaceGuionSpace.setText(" - ");
+        btnSpaceGuionSpace.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSpaceGuionSpaceActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout musicPanelLayout = new javax.swing.GroupLayout(musicPanel);
+        musicPanel.setLayout(musicPanelLayout);
+        musicPanelLayout.setHorizontalGroup(
+            musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(musicPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(chkShowTag)
+                .addGap(18, 18, 18)
+                .addComponent(lstTagId3View, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkRenameWithTag)
+                    .addComponent(txfTag, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addComponent(btnSpaceGuionSpace))
+                .addContainerGap())
+        );
+        musicPanelLayout.setVerticalGroup(
+            musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(musicPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lstTagId3View, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addGroup(musicPanelLayout.createSequentialGroup()
+                        .addGroup(musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(musicPanelLayout.createSequentialGroup()
+                                .addComponent(chkShowTag)
+                                .addGap(42, 42, 42))
+                            .addGroup(musicPanelLayout.createSequentialGroup()
+                                .addComponent(chkRenameWithTag)
+                                .addGap(9, 9, 9)
+                                .addComponent(btnSpaceGuionSpace)
+                                .addGap(6, 6, 6)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txfTag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
+        tbPaneConversions.addTab(bundle.getString("Música"), musicPanel); // NOI18N
+
+        chkShowExif.setText(bundle.getString("Mostrar etiqueta Exif con un clic")); // NOI18N
+
+        lstExif.setModel(lstExifModel);
+        lstExif.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstExifMouseClicked(evt);
+            }
+        });
+        lstExifView.setViewportView(lstExif);
+
+        chkRenameWithExif.setText(bundle.getString("Renombrar con este patrón")); // NOI18N
+
+        btnSpaceGuionSpace1.setText(" - ");
+        btnSpaceGuionSpace1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSpaceGuionSpaceActionPerformed(evt);
+            }
+        });
+
+        txfExif.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txfTagMouseClicked(evt);
+            }
+        });
+
+        txfRenameWithDate.setText(bundle.getString("Renombrar con Fecha Hora")); // NOI18N
+        txfRenameWithDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfRenameWithDateActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkShowExif)
+                    .addComponent(txfRenameWithDate))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lstExifView, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(chkRenameWithExif, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSpaceGuionSpace1)
+                    .addComponent(txfExif))
+                .addContainerGap(26, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(chkRenameWithExif)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                        .addComponent(btnSpaceGuionSpace1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txfExif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(chkShowExif)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txfRenameWithDate))
+                    .addComponent(lstExifView, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        tbPaneConversions.addTab(bundle.getString("Imágenes"), jPanel1); // NOI18N
 
         btnPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/edit-find.png"))); // NOI18N
         btnPreview.setText(bundle.getString("vistaPrevia")); // NOI18N
@@ -690,32 +881,31 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(centerPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tableView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
-                    .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, centerPaneLayout.createSequentialGroup()
-                            .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(btnPreview)
-                                .addComponent(chkSelectAll))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(centerPaneLayout.createSequentialGroup()
-                                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnRename, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(centerPaneLayout.createSequentialGroup()
-                                    .addComponent(chkShowDir)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(chkShowFiles)))
-                            .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(centerPaneLayout.createSequentialGroup()
-                                    .addGap(8, 8, 8)
-                                    .addComponent(lblExtension)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txfExtension, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE))
-                                .addGroup(centerPaneLayout.createSequentialGroup()
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnUndo, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))))
-                        .addComponent(tbPaneConversions, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tableView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+                    .addGroup(centerPaneLayout.createSequentialGroup()
+                        .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnPreview)
+                            .addComponent(chkSelectAll))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(centerPaneLayout.createSequentialGroup()
+                                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRename, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(centerPaneLayout.createSequentialGroup()
+                                .addComponent(chkShowDir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(chkShowFiles)))
+                        .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(centerPaneLayout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(lblExtension)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txfExtension, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
+                            .addGroup(centerPaneLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnUndo, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         centerPaneLayout.setVerticalGroup(
@@ -737,7 +927,7 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(lblExtension)
                     .addComponent(txfExtension, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableView, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .addComponent(tableView, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -815,15 +1005,49 @@ private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
         TagID3 tag = new TagID3();
         tag.readTags(f);
         TagJPanel tagJPanel = new TagJPanel();
-        if(tagJPanel.load(tag)){
+        if (tagJPanel.load(tag)) {
             popupMenu.removeAll();
             popupMenu.add(tagJPanel);
-            popupMenu.show(table, evt.getX() + 15 , 
-                    evt.getY() );
+            popupMenu.show(table, evt.getX() + 15,
+                    evt.getY());
         }
     }
 }//GEN-LAST:event_tableMouseClicked
-    
+
+private void lstTagId3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstTagId3MouseClicked
+    if (evt.getClickCount() == 2) {
+        Object o = lstTagId3.getSelectedValue();
+        if (o instanceof String2) {
+            txfTag.setText(txfTag.getText() + ((String2) o).getKey());
+        }
+    }
+}//GEN-LAST:event_lstTagId3MouseClicked
+
+private void btnSpaceGuionSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSpaceGuionSpaceActionPerformed
+    JTextField txf = (evt.getSource() == btnSpaceGuionSpace1) ? txfExif : txfTag;
+    txf.setText(txf.getText() + " - ");
+}//GEN-LAST:event_btnSpaceGuionSpaceActionPerformed
+
+private void txfTagMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txfTagMouseClicked
+    if (evt.getClickCount() == 2) {
+        JTextField txf = (JTextField) evt.getSource();
+        txf.setText("");
+    }
+}//GEN-LAST:event_txfTagMouseClicked
+
+private void lstExifMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstExifMouseClicked
+    if (evt.getClickCount() == 2) {
+        Object o = lstExif.getSelectedValue();
+        if (o instanceof String2) {
+            txfExif.setText(txfExif.getText() + ((String2) o).getKey());
+        }
+    }
+}//GEN-LAST:event_lstExifMouseClicked
+
+private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfRenameWithDateActionPerformed
+    txfExif.setText("{year}-{month}-{day}_{hour}.{min}.{sec}");
+}//GEN-LAST:event_txfRenameWithDateActionPerformed
+  
     /**
      * Add new row to rable
      * @param f
@@ -883,7 +1107,7 @@ private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
                     else if(chkInsertNumbersSelected){
                         args = String.valueOf(j);
                     }
-                    newName = renameItem(file.getName(),args);
+                    newName = renameItem(file,args);
                     data.get(i).set(2, newName);
                     j++;
                 }
@@ -961,7 +1185,58 @@ private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
         }
     }
 
-    private String renameItem(String str,String args) {
+    private String renameItem(File file,String args) {
+        String str = file.getName();
+        
+        if(chkRenameWithTag.isSelected()){
+            if(str.toUpperCase().endsWith(".MP3")){
+                TagID3 tag = new TagID3();
+                tag.readTags(file);
+                String pattern = txfTag.getText();
+                pattern = pattern.replaceAll("\\{album\\}", tag.getAlbum());
+                pattern = pattern.replaceAll("\\{artist\\}", tag.getArtist());
+                pattern = pattern.replaceAll("\\{title\\}", tag.getTitle());
+                pattern = pattern.replaceAll("\\{genre\\}", tag.getGenre());
+                pattern = pattern.replaceAll("\\{year\\}", tag.getYear());
+                str = pattern;
+            }
+        }
+        
+        if (chkRenameWithExif.isSelected()) {
+            String name = str.toUpperCase();
+            if(name.endsWith(".JPG") || name.endsWith(".JPEG")){
+                JIfdData exif = new JIfdData(file); 
+                exif.getPixelXDimension();
+                exif.getPixelYDimension();
+                exif.getModel();
+                exif.getMake();
+                String pattern = txfExif.getText();
+                pattern = pattern.replaceAll("\\{width\\}", String.valueOf(exif.getPixelXDimension()));
+                pattern = pattern.replaceAll("\\{height\\}", String.valueOf(exif.getPixelYDimension()));                
+                pattern = pattern.replaceAll("\\{dpih\\}", String.valueOf(exif.getXResolution() ));                
+                pattern = pattern.replaceAll("\\{dpiv\\}", String.valueOf(exif.getYResolution()));                
+                pattern = pattern.replaceAll("\\{make\\}", String.valueOf(exif.getMake()));                                
+                pattern = pattern.replaceAll("\\{model\\}", String.valueOf(exif.getModel()));   
+                Date d = JIfdData.getDateFromString(exif.getOriginalDateTime());
+                Calendar c = Calendar.getInstance();
+                c.setTime(d);
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                int min = c.get(Calendar.MINUTE);
+                int sec = c.get(Calendar.SECOND);
+                pattern = pattern.replaceAll("\\{year\\}", String.valueOf(year));                                
+                pattern = pattern.replaceAll("\\{month\\}", String.valueOf(month));                                
+                pattern = pattern.replaceAll("\\{day\\}", String.valueOf(day));                                
+                pattern = pattern.replaceAll("\\{hour\\}", String.valueOf(hour));                                
+                pattern = pattern.replaceAll("\\{min\\}", String.valueOf(min));                                
+                pattern = pattern.replaceAll("\\{sec\\}", String.valueOf(sec));                                
+                str = pattern;
+            }
+        }
+        
+        
         if(rbtnUppercase.isSelected()){
             str = Renamer.toUpperCase(str, (Integer)spUpperFrom.getValue(), (Integer)spUpperTo.getValue());
         }
@@ -1070,8 +1345,84 @@ private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
                 str = args + str;
             }
         }
-
+        
         return str;
+    }
+    
+    public HashMap<String, Integer> createTaskHash(){
+        
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        int i = 0;
+        
+        if(chkRenameWithTag.isSelected()){
+            map.put("RenameWithTag", i++);
+        }
+        
+        if (chkRenameWithExif.isSelected()) {
+            map.put("RenameWithExif", i++);
+        }
+        
+        if(rbtnUppercase.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(rbtnLowercase.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkCaseReplace.isSelected()){
+            map.put("Uppercase", i++);
+        }
+
+        if(rbtnUpperExtension.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(rbtnLowerExtension.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkReplace.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkSpaces.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkAccents.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkEnies.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkInsert.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkDeleteFrom.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkDeleteChars.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkDeleteBrackets.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkDeleteMoreOneSpaces.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        if(chkInsertNumbers.isSelected()){
+            map.put("Uppercase", i++);
+        }
+        
+        return map;
     }
     
     private void deshacer(){
@@ -1150,6 +1501,8 @@ private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
     private javax.swing.JButton btnPreview;
     private javax.swing.JButton btnRename;
     private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnSpaceGuionSpace;
+    private javax.swing.JButton btnSpaceGuionSpace1;
     private javax.swing.JButton btnUndo;
     private javax.swing.JPanel centerPane;
     private javax.swing.JPanel changeCasePanel;
@@ -1165,9 +1518,12 @@ private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
     private javax.swing.JCheckBox chkInsert;
     private javax.swing.JCheckBox chkInsertEnd;
     private javax.swing.JCheckBox chkInsertNumbers;
+    private javax.swing.JCheckBox chkRenameWithExif;
+    private javax.swing.JCheckBox chkRenameWithTag;
     private javax.swing.JCheckBox chkReplace;
     private javax.swing.JCheckBox chkSelectAll;
     private javax.swing.JCheckBox chkShowDir;
+    private javax.swing.JCheckBox chkShowExif;
     private javax.swing.JCheckBox chkShowFiles;
     private javax.swing.JCheckBox chkShowTag;
     private javax.swing.JCheckBox chkSpaces;
@@ -1186,6 +1542,11 @@ private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
     private javax.swing.JLabel lblStartAutoNumber;
     private javax.swing.JLabel lblTo;
     private javax.swing.JLabel lblWith;
+    private javax.swing.JList lstExif;
+    private javax.swing.JScrollPane lstExifView;
+    private javax.swing.JList lstTagId3;
+    private javax.swing.JScrollPane lstTagId3View;
+    private javax.swing.JPanel musicPanel;
     private javax.swing.JPopupMenu popupMenu;
     private javax.swing.JRadioButton rbtnLowerExtension;
     private javax.swing.JRadioButton rbtnLowercase;
@@ -1208,9 +1569,35 @@ private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
     private javax.swing.JTabbedPane tbPaneConversions;
     private javax.swing.JTextField txfDelete;
     private javax.swing.JTextField txfDelim;
+    private javax.swing.JTextField txfExif;
     private javax.swing.JTextField txfExtension;
     private javax.swing.JTextField txfInsert;
+    private javax.swing.JCheckBox txfRenameWithDate;
     private javax.swing.JTextField txfReplaceThis;
     private javax.swing.JTextField txfReplaceWith;
+    private javax.swing.JTextField txfTag;
     // End of variables declaration//GEN-END:variables
+}
+
+class String2{
+    private String key = "";
+    private String name = "";
+    public String2(String key, String name){
+        this.key = key;
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getName() {
+        return name;
+    }
+    
 }
