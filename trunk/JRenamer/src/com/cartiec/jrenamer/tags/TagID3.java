@@ -26,6 +26,7 @@ import java.io.File;
 import org.blinkenlights.jid3.ID3Exception;
 import org.blinkenlights.jid3.MP3File;
 import org.blinkenlights.jid3.MediaFile;
+import org.blinkenlights.jid3.v1.ID3V1Tag.Genre;
 import org.blinkenlights.jid3.v1.ID3V1_0Tag;
 import org.blinkenlights.jid3.v2.ID3V2_3_0Tag;
 
@@ -37,6 +38,13 @@ public class TagID3 {
     private ID3V1_0Tag id3v1_0Tag = null;
     private ID3V2_3_0Tag id3v2_3_0Tag = null;
     private File file = new File("");
+    
+    private String title = null;
+    private String artist = null;
+    private String album = null;
+    private String genre = null;
+    private String year = null;  
+    private String comment = null;
 
     public void readTags(File file) {
         this.file = file;
@@ -56,6 +64,47 @@ public class TagID3 {
             }
         } catch (ID3Exception e1) {
             e1.printStackTrace();
+        }
+        setTags();
+    }
+    
+    private void setTags(){
+        ID3V1_0Tag v1 = getId3v1_0Tag();
+        ID3V2_3_0Tag v2 = getId3v2_3_0Tag();
+        if (v2 != null) {
+            title = v2.getTitle();
+            artist = v2.getArtist();
+            album = v2.getAlbum();
+            genre = v2.getGenre();
+            try {
+                year = String.valueOf(v2.getYear());
+            } catch (ID3Exception ex) {
+                year = null;
+            }
+            comment = v2.getComment();
+        }
+        if (v1 != null) {
+            if ((title == null) || ((title != null) && (title.equals("")))) {
+                title = v1.getTitle();
+            }
+            if ((artist == null) || ((artist != null) && (artist.equals("")))) {
+                artist = v1.getArtist();
+            }
+            if ((album == null) || ((album != null) && (album.equals("")))) {
+                album = v1.getAlbum();
+            }
+            if ((genre == null) || ((genre != null) && (genre.equals("")))) {
+                Genre g = v1.getGenre();
+                if (g != null) {
+                    genre = g.toString();
+                }
+            }
+            if ((year == null) || ((year != null) && (year.equals("")))) {
+                year = v1.getYear();
+            }
+            if ((comment == null) || ((comment != null) && (comment.equals("")))) {
+                comment = v1.getComment();
+            }
         }
     }
 
@@ -77,6 +126,30 @@ public class TagID3 {
 
     public File getFile() {
         return file;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getYear() {
+        return year;
     }
     
     
