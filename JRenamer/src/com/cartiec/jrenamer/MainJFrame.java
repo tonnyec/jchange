@@ -9,6 +9,7 @@ import com.cartiec.jrenamer.tags.TagID3;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,21 +41,41 @@ import jexifviewer.JIfdData;
 public class MainJFrame extends javax.swing.JFrame {
 
     public static Logger LOG = Logger.getLogger("log.txt");
-    HashMap<File, File> filesRenamed = new HashMap<File, File>();
-    DefaultComboBoxModel cmbCaseReplaceModel = null;
-    DefaultComboBoxModel cmbSpacesModel = null;
-    FilesCellRenderer fcrenderer = new FilesCellRenderer();
-    ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame");
-    AbstractListModel lstTagId3Model;
-    AbstractListModel lstExifModel;
+    private HashMap<File, File> filesRenamed = new HashMap<File, File>();
+    private DefaultComboBoxModel cmbCaseReplaceModel = null;
+    private DefaultComboBoxModel cmbSpacesModel = null;
+    private FilesCellRenderer fcrenderer = new FilesCellRenderer();
+    private ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame");
+    private AbstractListModel lstTagId3Model;
+    private AbstractListModel lstExifModel;
+    private HashMap<String,String> tasks = new HashMap<String, String>(17);
+    private TaskJPanel tp = new TaskJPanel();
+    
+    
+    public static final String RENAME_WITH_TAG = "RenameWithTag";
+    public static final String RENAME_WITH_EXIF = "RenameWithExif";
+    public static final String UPPERCASE = "Uppercase";
+    public static final String LOWERCASE = "Lowercase";
+    public static final String CASE_REPLACE = "CaseReplace";
+    public static final String UPPER_EXTENSION = "UpperExtension";
+    public static final String LOWER_EXTENSION = "LowerExtension";
+    public static final String REPLACE = "Replace";
+    public static final String SPACES = "Spaces";
+    public static final String ACCENTS = "Accents";
+    public static final String ENIES = "Enies";
+    public static final String INSERT = "Insert";
+    public static final String DELETE_FROM = "DeleteFrom";
+    public static final String DELETE_CHARS = "DeleteChars";
+    public static final String DELETE_BRACKETS = "DeleteBrackets";
+    public static final String DELETE_MORE_ONE_SPACES = "DeleteMoreOneSpaces";
+    public static final String INSERT_NUMBERS = "InsertNumbers";
 
     public MainJFrame() {
 
         try {
             FileHandler logFile = new FileHandler("log.txt");
             logFile.setFormatter(new SimpleFormatter());
-            LOG.addHandler(logFile);
-            LOG.info("Inicia la aplicacion");
+            LOG.addHandler(logFile);            
 
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -137,8 +158,7 @@ public class MainJFrame extends javax.swing.JFrame {
         table.setDefaultRenderer(String.class, fcrenderer);
         table.setDefaultRenderer(Boolean.class, fcrenderer);
         table.setDefaultRenderer(Object.class, fcrenderer);
-
-
+        createDescriptionTasks();        
     }
 
     @SuppressWarnings("unchecked")
@@ -227,6 +247,7 @@ public class MainJFrame extends javax.swing.JFrame {
         btnUndo = new javax.swing.JButton();
         txfExtension = new javax.swing.JTextField();
         lblExtension = new javax.swing.JLabel();
+        btnOrder = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JRenamer");
@@ -698,7 +719,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(chkRenameWithTag)
-                    .addComponent(txfTag, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addComponent(txfTag, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                     .addComponent(btnSpaceGuionSpace))
                 .addContainerGap())
         );
@@ -707,7 +728,7 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(musicPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lstTagId3View, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(lstTagId3View, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
                     .addGroup(musicPanelLayout.createSequentialGroup()
                         .addGroup(musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(musicPanelLayout.createSequentialGroup()
@@ -782,7 +803,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(chkRenameWithExif)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                         .addComponent(btnSpaceGuionSpace1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txfExif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -790,7 +811,7 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addComponent(chkShowExif)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txfRenameWithDate))
-                    .addComponent(lstExifView, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
+                    .addComponent(lstExifView, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -874,6 +895,18 @@ public class MainJFrame extends javax.swing.JFrame {
 
         lblExtension.setText(bundle.getString("extensión")); // NOI18N
 
+        btnOrder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/edit-clear.png"))); // NOI18N
+        btnOrder.setText(bundle.getString("Orden")); // NOI18N
+        btnOrder.setToolTipText(bundle.getString("Orden")); // NOI18N
+        btnOrder.setMaximumSize(new java.awt.Dimension(23, 23));
+        btnOrder.setMinimumSize(new java.awt.Dimension(23, 23));
+        btnOrder.setPreferredSize(new java.awt.Dimension(50, 23));
+        btnOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOrderActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout centerPaneLayout = new javax.swing.GroupLayout(centerPane);
         centerPane.setLayout(centerPaneLayout);
         centerPaneLayout.setHorizontalGroup(
@@ -882,31 +915,30 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tableView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+                    .addComponent(tableView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
                     .addGroup(centerPaneLayout.createSequentialGroup()
                         .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnPreview)
-                            .addComponent(chkSelectAll))
+                            .addComponent(chkSelectAll)
+                            .addComponent(btnPreview))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(centerPaneLayout.createSequentialGroup()
-                                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRename, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(centerPaneLayout.createSequentialGroup()
                                 .addComponent(chkShowDir)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(chkShowFiles)))
-                        .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(centerPaneLayout.createSequentialGroup()
-                                .addGap(8, 8, 8)
+                                .addComponent(chkShowFiles)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                                 .addComponent(lblExtension)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txfExtension, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
+                                .addComponent(txfExtension, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(centerPaneLayout.createSequentialGroup()
+                                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnUndo, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)))))
-                .addContainerGap())
+                                .addComponent(btnRename, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnUndo, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)))))
+                .addGap(19, 19, 19))
         );
         centerPaneLayout.setVerticalGroup(
             centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -918,7 +950,8 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(btnPreview)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRename, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnUndo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnUndo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkShowDir)
@@ -927,14 +960,14 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(lblExtension)
                     .addComponent(txfExtension, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableView, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                .addComponent(tableView, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         getContentPane().add(centerPane, java.awt.BorderLayout.CENTER);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-763)/2, (screenSize.height-527)/2, 763, 527);
+        setBounds((screenSize.width-887)/2, (screenSize.height-527)/2, 887, 527);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
@@ -1047,6 +1080,15 @@ private void lstExifMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfRenameWithDateActionPerformed
     txfExif.setText("{year}-{month}-{day}_{hour}.{min}.{sec}");
 }//GEN-LAST:event_txfRenameWithDateActionPerformed
+
+private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
+    createDescriptionTasks();        
+    tp.setData(createTaskHash());
+    tp.setTasks(tasks);    
+    popupMenu.removeAll();
+    popupMenu.add(tp);
+    popupMenu.show(this, getWidth()/2,getHeight()/2);
+}//GEN-LAST:event_btnOrderActionPerformed
   
     /**
      * Add new row to rable
@@ -1160,13 +1202,9 @@ private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {/
     
     private void checkRows(boolean value){
         Vector<Vector> data = ((DefaultTableModel) table.getModel()).getDataVector();
-        Boolean check;
-        File file;
-        String newName;
-        int i = 0;
-        for (Vector objects : data) {
-            data.get(i).set(0, value);
-            i++;
+        
+        for (int i = 0; i < data.size(); i++) {
+            data.get(i).set(0, value);            
         }
         ((DefaultTableModel) table.getModel()).fireTableDataChanged();
     }
@@ -1349,80 +1387,108 @@ private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {/
         return str;
     }
     
-    public HashMap<String, Integer> createTaskHash(){
+
+
+    
+    public ArrayList<String> createTaskHash(){
+        ArrayList<String> lst = tp.getData();
         
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
-        int i = 0;
-        
-        if(chkRenameWithTag.isSelected()){
-            map.put("RenameWithTag", i++);
+        if(chkRenameWithTag.isSelected() && (!lst.contains(RENAME_WITH_TAG))){
+            lst.add(RENAME_WITH_TAG);
         }
         
-        if (chkRenameWithExif.isSelected()) {
-            map.put("RenameWithExif", i++);
+        if (chkRenameWithExif.isSelected() && (!lst.contains(RENAME_WITH_EXIF))){
+            lst.add(RENAME_WITH_EXIF);
         }
         
-        if(rbtnUppercase.isSelected()){
-            map.put("Uppercase", i++);
+        if(rbtnUppercase.isSelected() && (!lst.contains(UPPERCASE))){
+            lst.add(UPPERCASE);
         }
         
-        if(rbtnLowercase.isSelected()){
-            map.put("Uppercase", i++);
+        if(rbtnLowercase.isSelected() && (!lst.contains(LOWERCASE))){
+            lst.add(LOWERCASE);
         }
         
-        if(chkCaseReplace.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkCaseReplace.isSelected() && (!lst.contains(CASE_REPLACE))){
+            lst.add(CASE_REPLACE);
         }
 
-        if(rbtnUpperExtension.isSelected()){
-            map.put("Uppercase", i++);
+        if(rbtnUpperExtension.isSelected() && (!lst.contains(UPPER_EXTENSION))){
+            lst.add(UPPER_EXTENSION);
         }
         
-        if(rbtnLowerExtension.isSelected()){
-            map.put("Uppercase", i++);
+        if(rbtnLowerExtension.isSelected() && (!lst.contains(LOWER_EXTENSION))){
+            lst.add(LOWER_EXTENSION);
         }
         
-        if(chkReplace.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkReplace.isSelected() && (!lst.contains(REPLACE))){
+            lst.add(REPLACE);
         }
         
-        if(chkSpaces.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkSpaces.isSelected() && (!lst.contains(SPACES))){
+            lst.add(SPACES);
         }
         
-        if(chkAccents.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkAccents.isSelected() && (!lst.contains(ACCENTS))){
+            lst.add(ACCENTS);
         }
         
-        if(chkEnies.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkEnies.isSelected() && (!lst.contains(ENIES))){
+            lst.add(ENIES);
         }
         
-        if(chkInsert.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkInsert.isSelected() && (!lst.contains(INSERT))){
+            lst.add(INSERT);
         }
         
-        if(chkDeleteFrom.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkDeleteFrom.isSelected() && (!lst.contains(DELETE_FROM))){
+            lst.add(DELETE_FROM);
         }
         
-        if(chkDeleteChars.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkDeleteChars.isSelected() && (!lst.contains(DELETE_CHARS))){
+            lst.add(DELETE_CHARS);
         }
         
-        if(chkDeleteBrackets.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkDeleteBrackets.isSelected() && (!lst.contains(DELETE_BRACKETS))){
+            lst.add(DELETE_BRACKETS);
         }
         
-        if(chkDeleteMoreOneSpaces.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkDeleteMoreOneSpaces.isSelected() && (!lst.contains(DELETE_MORE_ONE_SPACES))){
+            lst.add(DELETE_MORE_ONE_SPACES);
         }
         
-        if(chkInsertNumbers.isSelected()){
-            map.put("Uppercase", i++);
+        if(chkInsertNumbers.isSelected() && (!lst.contains(INSERT_NUMBERS))){
+            lst.add(INSERT_NUMBERS);
         }
         
-        return map;
+        return lst;
+    }
+    
+    private void createDescriptionTasks(){
+        tasks.clear();
+        tasks.put("RenameWithTag",chkRenameWithTag.getText());
+        tasks.put("RenameWithExif", chkRenameWithExif.getText());
+        tasks.put("Uppercase",rbtnUppercase.getText());
+        tasks.put("Lowercase",rbtnLowercase.getText());
+        Object o = cmbCaseReplace.getSelectedItem();
+        if(o != null){
+            tasks.put("CaseReplace",o.toString());
+        }
+        tasks.put("UpperExtension",rbtnUpperExtension.getText());
+        tasks.put("LowerExtension",rbtnLowerExtension.getText());
+        tasks.put("Replace",chkReplace.getText());
+        o = cmbSpaces.getSelectedItem();
+        if(o != null){
+            tasks.put("Spaces",o.toString());
+        }
+        tasks.put("Accents",chkAccents.getText());
+        tasks.put("Enies",chkEnies.getText());
+        tasks.put("Insert",chkInsert.getText());
+        tasks.put("DeleteFrom",chkDeleteFrom.getText());
+        tasks.put("DeleteChars",chkDeleteChars.getText());
+        tasks.put("DeleteBrackets",chkDeleteBrackets.getText());
+        tasks.put("DeleteMoreOneSpaces",chkDeleteMoreOneSpaces.getText());
+        tasks.put("InsertNumbers",chkInsertNumbers.getText());
     }
     
     private void deshacer(){
@@ -1469,23 +1535,22 @@ private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {/
         rbtnNi.setSelected(true);
         spDeleteTo.setValue(1);
     }
-
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (ClassNotFoundException ex) {
-           LOG.log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-           LOG.log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-           LOG.log(Level.SEVERE, null, ex);
-        } catch (UnsupportedLookAndFeelException ex) {
-           LOG.log(Level.SEVERE, null, ex);
-        }       
+//        try {
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        }
+//        catch (ClassNotFoundException ex) {
+//           LOG.log(Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//           LOG.log(Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//           LOG.log(Level.SEVERE, null, ex);
+//        } catch (UnsupportedLookAndFeelException ex) {
+//           LOG.log(Level.SEVERE, null, ex);
+//        }       
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
@@ -1498,6 +1563,7 @@ private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {/
     private javax.swing.ButtonGroup btnGroupEnies;
     private javax.swing.ButtonGroup btnGroupExtensions;
     private javax.swing.ButtonGroup btnGroupUpperLower;
+    private javax.swing.JButton btnOrder;
     private javax.swing.JButton btnPreview;
     private javax.swing.JButton btnRename;
     private javax.swing.JButton btnReset;
