@@ -5,6 +5,7 @@
  */
 package com.cartiec.jrenamer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.AbstractListModel;
 
@@ -14,35 +15,50 @@ import javax.swing.AbstractListModel;
  */
 public class TaskJPanel extends javax.swing.JPanel {
 
-    LstModel lstModel = new LstModel();
+    private LstModel lstModel = new LstModel();
+    private HashMap<String, String> tasks;
+    private boolean changed = false;
 
     /** Creates new form TaskJPanel */
     public TaskJPanel() {
         initComponents();
     }
 
-    public void setData(HashMap<String, Integer> map) {
-        lstModel.setMap(map);
+    public void setTasks(HashMap<String, String> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void setData(ArrayList<String> lst) {
+        lstModel.setList(lst);
+    }
+    
+    public ArrayList<String> getData() {
+        return lstModel.getList();
     }
 
     class LstModel extends AbstractListModel {
-        HashMap<String, Integer> map = null;
+
+        ArrayList<String> list = new ArrayList<String>();
 
         public int getSize() {
-            return map.size();
+            return list.size();
         }
 
-        public Object getElementAt(int i) {
-            return map.keySet().toArray()[i];
+        public String getElementAt(int i) {
+            return tasks.get(list.get(i));
         }
 
-        public HashMap<String, Integer> getMap() {
-            return map;
+        public ArrayList<String> getList() {
+            return list;
         }
 
-        public void setMap(HashMap<String, Integer> map) {
-            this.map = map;
+        public void setList(ArrayList<String> lst) {
+            this.list = lst;
         }
+    }
+
+    public boolean isChanged() {
+        return changed;
     }
 
     /** This method is called from within the constructor to
@@ -57,10 +73,10 @@ public class TaskJPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         lst = new javax.swing.JList();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnFirst = new javax.swing.JButton();
+        btnPrevious = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
+        btnLast = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -72,29 +88,100 @@ public class TaskJPanel extends javax.swing.JPanel {
         jPanel1.setPreferredSize(new java.awt.Dimension(34, 152));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-top.png"))); // NOI18N
-        jButton1.setPreferredSize(new java.awt.Dimension(34, 34));
-        jPanel1.add(jButton1);
+        btnFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-top.png"))); // NOI18N
+        btnFirst.setPreferredSize(new java.awt.Dimension(34, 34));
+        btnFirst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFirstActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnFirst);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-up.png"))); // NOI18N
-        jButton2.setPreferredSize(new java.awt.Dimension(34, 34));
-        jPanel1.add(jButton2);
+        btnPrevious.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-up.png"))); // NOI18N
+        btnPrevious.setPreferredSize(new java.awt.Dimension(34, 34));
+        btnPrevious.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreviousActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnPrevious);
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-down.png"))); // NOI18N
-        jButton3.setPreferredSize(new java.awt.Dimension(34, 34));
-        jPanel1.add(jButton3);
+        btnNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-down.png"))); // NOI18N
+        btnNext.setPreferredSize(new java.awt.Dimension(34, 34));
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnNext);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-bottom.png"))); // NOI18N
-        jButton4.setPreferredSize(new java.awt.Dimension(34, 34));
-        jPanel1.add(jButton4);
+        btnLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-bottom.png"))); // NOI18N
+        btnLast.setPreferredSize(new java.awt.Dimension(34, 34));
+        btnLast.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLastActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnLast);
 
         add(jPanel1, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
+
+private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
+    int i = lst.getSelectedIndex();
+    if (i >= 0) {
+        LstModel lm = (LstModel) lst.getModel();
+        String v = lm.getList().remove(i);
+        lm.getList().add(0, v);
+        lst.paint(lst.getGraphics());
+        changed = true;
+    }
+}//GEN-LAST:event_btnFirstActionPerformed
+
+private void btnPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviousActionPerformed
+    int i = lst.getSelectedIndex();
+    if (i >= 0) {
+        LstModel lm = (LstModel) lst.getModel();
+        if (i - 1 >= 0) {
+            String v = lm.getList().remove(i);
+            lm.getList().add(i - 1, v);
+            lst.paint(lst.getGraphics());
+            changed = true;
+        }
+    }
+}//GEN-LAST:event_btnPreviousActionPerformed
+
+private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+    int i = lst.getSelectedIndex();
+    if (i >= 0) {
+        LstModel lm = (LstModel) lst.getModel();
+        int l = lm.getList().size();
+        if (i + 1 <= l) {
+            String v = lm.getList().remove(i);
+            lm.getList().add(i + 1, v);
+            lst.paint(lst.getGraphics());
+            changed = true;
+        }
+    }
+}//GEN-LAST:event_btnNextActionPerformed
+
+private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
+    int i = lst.getSelectedIndex();
+    if (i >= 0) {
+        LstModel lm = (LstModel) lst.getModel();
+        String v = lm.getList().remove(i);
+        int l = lm.getList().size();
+        lm.getList().add(l, v);
+        lst.paint(lst.getGraphics());
+        changed = true;
+    }
+}//GEN-LAST:event_btnLastActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton btnFirst;
+    private javax.swing.JButton btnLast;
+    private javax.swing.JButton btnNext;
+    private javax.swing.JButton btnPrevious;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList lst;
