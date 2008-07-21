@@ -16,49 +16,35 @@ import javax.swing.AbstractListModel;
 public class TaskJPanel extends javax.swing.JPanel {
 
     private LstModel lstModel = new LstModel();
-    private HashMap<String, String> tasks;
-    private boolean changed = false;
+    private HashMap<String, String> tasksDescriptions;
+    private ArrayList<String> tasksList;
 
     /** Creates new form TaskJPanel */
     public TaskJPanel() {
         initComponents();
     }
 
-    public void setTasks(HashMap<String, String> tasks) {
-        this.tasks = tasks;
+    public void setTasksDescriptions(HashMap<String, String> tasks) {
+        this.tasksDescriptions = tasks;        
     }
 
     public void setData(ArrayList<String> lst) {
-        lstModel.setList(lst);
-    }
-    
-    public ArrayList<String> getData() {
-        return lstModel.getList();
+        tasksList = lst;
+        this.lst.setModel(new LstModel());                
     }
 
     class LstModel extends AbstractListModel {
-
-        ArrayList<String> list = new ArrayList<String>();
-
         public int getSize() {
-            return list.size();
+            return tasksList.size();
         }
 
         public String getElementAt(int i) {
-            return tasks.get(list.get(i));
+            return tasksDescriptions.get(tasksList.get(i));
         }
 
         public ArrayList<String> getList() {
-            return list;
+            return tasksList;
         }
-
-        public void setList(ArrayList<String> lst) {
-            this.list = lst;
-        }
-    }
-
-    public boolean isChanged() {
-        return changed;
     }
 
     /** This method is called from within the constructor to
@@ -78,7 +64,8 @@ public class TaskJPanel extends javax.swing.JPanel {
         btnNext = new javax.swing.JButton();
         btnLast = new javax.swing.JButton();
 
-        setLayout(new java.awt.BorderLayout());
+        setBorder(new javax.swing.border.MatteBorder(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/emblem-new.png")))); // NOI18N
+        setLayout(new java.awt.BorderLayout(3, 3));
 
         lst.setModel(lstModel);
         jScrollPane1.setViewportView(lst);
@@ -88,8 +75,8 @@ public class TaskJPanel extends javax.swing.JPanel {
         jPanel1.setPreferredSize(new java.awt.Dimension(34, 152));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
-        btnFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-top.png"))); // NOI18N
-        btnFirst.setPreferredSize(new java.awt.Dimension(34, 34));
+        btnFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/go-top.png"))); // NOI18N
+        btnFirst.setPreferredSize(new java.awt.Dimension(24, 24));
         btnFirst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnFirstActionPerformed(evt);
@@ -97,8 +84,8 @@ public class TaskJPanel extends javax.swing.JPanel {
         });
         jPanel1.add(btnFirst);
 
-        btnPrevious.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-up.png"))); // NOI18N
-        btnPrevious.setPreferredSize(new java.awt.Dimension(34, 34));
+        btnPrevious.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/go-up.png"))); // NOI18N
+        btnPrevious.setPreferredSize(new java.awt.Dimension(24, 24));
         btnPrevious.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPreviousActionPerformed(evt);
@@ -106,8 +93,8 @@ public class TaskJPanel extends javax.swing.JPanel {
         });
         jPanel1.add(btnPrevious);
 
-        btnNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-down.png"))); // NOI18N
-        btnNext.setPreferredSize(new java.awt.Dimension(34, 34));
+        btnNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/go-down.png"))); // NOI18N
+        btnNext.setPreferredSize(new java.awt.Dimension(24, 24));
         btnNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNextActionPerformed(evt);
@@ -115,8 +102,8 @@ public class TaskJPanel extends javax.swing.JPanel {
         });
         jPanel1.add(btnNext);
 
-        btnLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons32x32/go-bottom.png"))); // NOI18N
-        btnLast.setPreferredSize(new java.awt.Dimension(34, 34));
+        btnLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/go-bottom.png"))); // NOI18N
+        btnLast.setPreferredSize(new java.awt.Dimension(24, 24));
         btnLast.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLastActionPerformed(evt);
@@ -130,23 +117,19 @@ public class TaskJPanel extends javax.swing.JPanel {
 private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
     int i = lst.getSelectedIndex();
     if (i >= 0) {
-        LstModel lm = (LstModel) lst.getModel();
-        String v = lm.getList().remove(i);
-        lm.getList().add(0, v);
-        lst.paint(lst.getGraphics());
-        changed = true;
+        String v = tasksList.remove(i);
+        tasksList.add(0, v);
+        paint();
     }
 }//GEN-LAST:event_btnFirstActionPerformed
 
 private void btnPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviousActionPerformed
     int i = lst.getSelectedIndex();
     if (i >= 0) {
-        LstModel lm = (LstModel) lst.getModel();
         if (i - 1 >= 0) {
-            String v = lm.getList().remove(i);
-            lm.getList().add(i - 1, v);
-            lst.paint(lst.getGraphics());
-            changed = true;
+            String v = tasksList.remove(i);
+            tasksList.add(i - 1, v);
+            paint();
         }
     }
 }//GEN-LAST:event_btnPreviousActionPerformed
@@ -154,13 +137,11 @@ private void btnPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
     int i = lst.getSelectedIndex();
     if (i >= 0) {
-        LstModel lm = (LstModel) lst.getModel();
-        int l = lm.getList().size();
+        int l = tasksList.size();
         if (i + 1 <= l) {
-            String v = lm.getList().remove(i);
-            lm.getList().add(i + 1, v);
-            lst.paint(lst.getGraphics());
-            changed = true;
+            String v = tasksList.remove(i);
+            tasksList.add(i + 1, v);
+            paint();
         }
     }
 }//GEN-LAST:event_btnNextActionPerformed
@@ -168,15 +149,20 @@ private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
     int i = lst.getSelectedIndex();
     if (i >= 0) {
-        LstModel lm = (LstModel) lst.getModel();
-        String v = lm.getList().remove(i);
-        int l = lm.getList().size();
-        lm.getList().add(l, v);
-        lst.paint(lst.getGraphics());
-        changed = true;
+        String v = tasksList.remove(i);
+        int l = tasksList.size();
+        tasksList.add(l, v);
+        paint();
     }
 }//GEN-LAST:event_btnLastActionPerformed
 
+
+    public  void paint(){
+        if(lst.getGraphics() != null){
+            lst.paint(lst.getGraphics());
+        }
+        System.out.println(lst.getComponentCount() + " " + tasksList.size());
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFirst;
     private javax.swing.JButton btnLast;

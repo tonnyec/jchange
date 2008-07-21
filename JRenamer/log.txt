@@ -1,2 +1,0 @@
-18-jul-2008 16:47:37 com.cartiec.jrenamer.MainJFrame <init>
-INFO: Inicia la aplicacion

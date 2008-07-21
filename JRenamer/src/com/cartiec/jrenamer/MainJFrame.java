@@ -48,7 +48,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame");
     private AbstractListModel lstTagId3Model;
     private AbstractListModel lstExifModel;
-    private HashMap<String,String> tasks = new HashMap<String, String>(17);
+    private ArrayList<String> tasksList = new ArrayList<String>();
+    private HashMap<String,String> tasksDescriptions = new HashMap<String, String>(17);
     private TaskJPanel tp = new TaskJPanel();
     
     
@@ -71,7 +72,6 @@ public class MainJFrame extends javax.swing.JFrame {
     public static final String INSERT_NUMBERS = "InsertNumbers";
 
     public MainJFrame() {
-
         try {
             FileHandler logFile = new FileHandler("log.txt");
             logFile.setFormatter(new SimpleFormatter());
@@ -728,7 +728,7 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(musicPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lstTagId3View, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                    .addComponent(lstTagId3View, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                     .addGroup(musicPanelLayout.createSequentialGroup()
                         .addGroup(musicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(musicPanelLayout.createSequentialGroup()
@@ -794,7 +794,7 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(chkRenameWithExif, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSpaceGuionSpace1)
                     .addComponent(txfExif))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -803,7 +803,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(chkRenameWithExif)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                         .addComponent(btnSpaceGuionSpace1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txfExif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -811,7 +811,7 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addComponent(chkShowExif)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txfRenameWithDate))
-                    .addComponent(lstExifView, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE))
+                    .addComponent(lstExifView, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -895,7 +895,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         lblExtension.setText(bundle.getString("extensión")); // NOI18N
 
-        btnOrder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/edit-clear.png"))); // NOI18N
+        btnOrder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/cartiec/jrenamer/res/icons22x22/format-justify-fill.png"))); // NOI18N
         btnOrder.setText(bundle.getString("Orden")); // NOI18N
         btnOrder.setToolTipText(bundle.getString("Orden")); // NOI18N
         btnOrder.setMaximumSize(new java.awt.Dimension(23, 23));
@@ -915,7 +915,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tbPaneConversions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tableView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+                    .addComponent(tableView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
                     .addGroup(centerPaneLayout.createSequentialGroup()
                         .addGroup(centerPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chkSelectAll)
@@ -926,7 +926,7 @@ public class MainJFrame extends javax.swing.JFrame {
                                 .addComponent(chkShowDir)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(chkShowFiles)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 219, Short.MAX_VALUE)
                                 .addComponent(lblExtension)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txfExtension, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -937,7 +937,8 @@ public class MainJFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnUndo, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)))))
+                                .addComponent(btnOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))))
                 .addGap(19, 19, 19))
         );
         centerPaneLayout.setVerticalGroup(
@@ -960,7 +961,7 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(lblExtension)
                     .addComponent(txfExtension, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableView, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .addComponent(tableView, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1014,10 +1015,10 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRenameActionPerformed
 
     private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUndoActionPerformed
-		if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmarDeshacer"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {//GEN-LAST:event_btnUndoActionPerformed
+		if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmarDeshacer"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             deshacer();
         }
-    }
+    }//GEN-LAST:event_btnUndoActionPerformed
 
     private void txfExtensionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfExtensionKeyReleased
         refreshTable();
@@ -1031,64 +1032,66 @@ public class MainJFrame extends javax.swing.JFrame {
         restartControls();
     }//GEN-LAST:event_btnResetActionPerformed
 
-private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-    if (chkShowTag.isSelected()) {
-        int r = table.getSelectedRow();
-        File f = (File) ((DefaultTableModel) table.getModel()).getValueAt(r, 1);
-        TagID3 tag = new TagID3();
-        tag.readTags(f);
-        TagJPanel tagJPanel = new TagJPanel();
-        if (tagJPanel.load(tag)) {
-            popupMenu.removeAll();
-            popupMenu.add(tagJPanel);
-            popupMenu.show(table, evt.getX() + 15,
-                    evt.getY());
-        }
-    }
-}//GEN-LAST:event_tableMouseClicked
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+		if (chkShowTag.isSelected()) {
+			int r = table.getSelectedRow();
+			File f = (File) ((DefaultTableModel) table.getModel()).getValueAt(r, 1);
+			TagID3 tag = new TagID3();
+			tag.readTags(f);
+			TagJPanel tagJPanel = new TagJPanel();
+			if (tagJPanel.load(tag)) {
+				popupMenu.removeAll();
+				popupMenu.add(tagJPanel);
+				popupMenu.show(table, evt.getX() + 15,
+						evt.getY());
+			}
+		}
+    }//GEN-LAST:event_tableMouseClicked
 
-private void lstTagId3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstTagId3MouseClicked
-    if (evt.getClickCount() == 2) {
-        Object o = lstTagId3.getSelectedValue();
-        if (o instanceof String2) {
-            txfTag.setText(txfTag.getText() + ((String2) o).getKey());
-        }
-    }
-}//GEN-LAST:event_lstTagId3MouseClicked
+    private void lstTagId3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstTagId3MouseClicked
+		if (evt.getClickCount() == 2) {
+			Object o = lstTagId3.getSelectedValue();
+			if (o instanceof String2) {
+				txfTag.setText(txfTag.getText() + ((String2) o).getKey());
+			}
+		}
+    }//GEN-LAST:event_lstTagId3MouseClicked
 
-private void btnSpaceGuionSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSpaceGuionSpaceActionPerformed
-    JTextField txf = (evt.getSource() == btnSpaceGuionSpace1) ? txfExif : txfTag;
-    txf.setText(txf.getText() + " - ");
-}//GEN-LAST:event_btnSpaceGuionSpaceActionPerformed
+    private void btnSpaceGuionSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSpaceGuionSpaceActionPerformed
+		JTextField txf = (evt.getSource() == btnSpaceGuionSpace1) ? txfExif : txfTag;
+		txf.setText(txf.getText() + " - ");
+    }//GEN-LAST:event_btnSpaceGuionSpaceActionPerformed
 
-private void txfTagMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txfTagMouseClicked
-    if (evt.getClickCount() == 2) {
-        JTextField txf = (JTextField) evt.getSource();
-        txf.setText("");
-    }
-}//GEN-LAST:event_txfTagMouseClicked
+    private void txfTagMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txfTagMouseClicked
+		if (evt.getClickCount() == 2) {
+			JTextField txf = (JTextField) evt.getSource();
+			txf.setText("");
+		}
+    }//GEN-LAST:event_txfTagMouseClicked
 
-private void lstExifMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstExifMouseClicked
-    if (evt.getClickCount() == 2) {
-        Object o = lstExif.getSelectedValue();
-        if (o instanceof String2) {
-            txfExif.setText(txfExif.getText() + ((String2) o).getKey());
-        }
-    }
-}//GEN-LAST:event_lstExifMouseClicked
+    private void lstExifMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstExifMouseClicked
+		if (evt.getClickCount() == 2) {
+			Object o = lstExif.getSelectedValue();
+			if (o instanceof String2) {
+				txfExif.setText(txfExif.getText() + ((String2) o).getKey());
+			}
+		}
+    }//GEN-LAST:event_lstExifMouseClicked
 
-private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfRenameWithDateActionPerformed
-    txfExif.setText("{year}-{month}-{day}_{hour}.{min}.{sec}");
-}//GEN-LAST:event_txfRenameWithDateActionPerformed
+    private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfRenameWithDateActionPerformed
+		txfExif.setText("{year}-{month}-{day}_{hour}.{min}.{sec}");
+    }//GEN-LAST:event_txfRenameWithDateActionPerformed
 
-private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
-    createDescriptionTasks();        
-    tp.setData(createTaskHash());
-    tp.setTasks(tasks);    
-    popupMenu.removeAll();
-    popupMenu.add(tp);
-    popupMenu.show(this, getWidth()/2,getHeight()/2);
-}//GEN-LAST:event_btnOrderActionPerformed
+    private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
+        createTaskList();
+        createDescriptionTasks();        
+        tp.setTasksDescriptions(tasksDescriptions); 
+        tp.setData(tasksList);        
+        popupMenu.removeAll();
+        popupMenu.add(tp);   
+        popupMenu.show(this, getWidth()/2 - tp.getWidth()/2 ,
+                getHeight()/2 - tp.getHeight()/2);
+    }//GEN-LAST:event_btnOrderActionPerformed
   
     /**
      * Add new row to rable
@@ -1224,271 +1227,274 @@ private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     private String renameItem(File file,String args) {
-        String str = file.getName();
-        
-        if(chkRenameWithTag.isSelected()){
-            if(str.toUpperCase().endsWith(".MP3")){
-                TagID3 tag = new TagID3();
-                tag.readTags(file);
-                String pattern = txfTag.getText();
-                pattern = pattern.replaceAll("\\{album\\}", tag.getAlbum());
-                pattern = pattern.replaceAll("\\{artist\\}", tag.getArtist());
-                pattern = pattern.replaceAll("\\{title\\}", tag.getTitle());
-                pattern = pattern.replaceAll("\\{genre\\}", tag.getGenre());
-                pattern = pattern.replaceAll("\\{year\\}", tag.getYear());
-                str = pattern;
-            }
-        }
-        
-        if (chkRenameWithExif.isSelected()) {
-            String name = str.toUpperCase();
-            if(name.endsWith(".JPG") || name.endsWith(".JPEG")){
-                JIfdData exif = new JIfdData(file); 
-                exif.getPixelXDimension();
-                exif.getPixelYDimension();
-                exif.getModel();
-                exif.getMake();
-                String pattern = txfExif.getText();
-                pattern = pattern.replaceAll("\\{width\\}", String.valueOf(exif.getPixelXDimension()));
-                pattern = pattern.replaceAll("\\{height\\}", String.valueOf(exif.getPixelYDimension()));                
-                pattern = pattern.replaceAll("\\{dpih\\}", String.valueOf(exif.getXResolution() ));                
-                pattern = pattern.replaceAll("\\{dpiv\\}", String.valueOf(exif.getYResolution()));                
-                pattern = pattern.replaceAll("\\{make\\}", String.valueOf(exif.getMake()));                                
-                pattern = pattern.replaceAll("\\{model\\}", String.valueOf(exif.getModel()));   
-                Date d = JIfdData.getDateFromString(exif.getOriginalDateTime());
-                Calendar c = Calendar.getInstance();
-                c.setTime(d);
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
-                int hour = c.get(Calendar.HOUR_OF_DAY);
-                int min = c.get(Calendar.MINUTE);
-                int sec = c.get(Calendar.SECOND);
-                pattern = pattern.replaceAll("\\{year\\}", String.valueOf(year));                                
-                pattern = pattern.replaceAll("\\{month\\}", String.valueOf(month));                                
-                pattern = pattern.replaceAll("\\{day\\}", String.valueOf(day));                                
-                pattern = pattern.replaceAll("\\{hour\\}", String.valueOf(hour));                                
-                pattern = pattern.replaceAll("\\{min\\}", String.valueOf(min));                                
-                pattern = pattern.replaceAll("\\{sec\\}", String.valueOf(sec));                                
-                str = pattern;
-            }
-        }
-        
-        
-        if(rbtnUppercase.isSelected()){
-            str = Renamer.toUpperCase(str, (Integer)spUpperFrom.getValue(), (Integer)spUpperTo.getValue());
-        }
-        
-        if(rbtnLowercase.isSelected()){
-            str = Renamer.toLowerCase(str, (Integer)spLowerFrom.getValue(), (Integer)spLowerTo.getValue());
-        }
-        
-        if(chkCaseReplace.isSelected()){
-            Object o = cmbCaseReplace.getSelectedItem();
+        String str = file.getName();        
+        for (int i = 0; i < tasksList.size(); i++) {
+            String task = tasksList.get(i);
             
-            if(bundle.getString("todasEnMayusculas").equals(o)){ 
-                str = str.toUpperCase();
+            if(task.equals(RENAME_WITH_TAG) && chkRenameWithTag.isSelected()){
+                if(str.toUpperCase().endsWith(".MP3")){
+                    TagID3 tag = new TagID3();
+                    tag.readTags(file);
+                    String pattern = txfTag.getText();
+                    pattern = pattern.replaceAll("\\{album\\}", tag.getAlbum());
+                    pattern = pattern.replaceAll("\\{artist\\}", tag.getArtist());
+                    pattern = pattern.replaceAll("\\{title\\}", tag.getTitle());
+                    pattern = pattern.replaceAll("\\{genre\\}", tag.getGenre());
+                    pattern = pattern.replaceAll("\\{year\\}", tag.getYear());
+                    str = pattern;
+                }
             }
-            else if(bundle.getString("todasEnMinusculas").equals(o)){ 
-                str = str.toLowerCase();
-            }
-            else if(bundle.getString("primeraLetraMayusculas").equals(o)){ 
-                str = Renamer.toFirstLetterUppercase(str);
-            }
-            else if(bundle.getString("primeraLetraDeCadaPalabraEnMayusculas").equals(o)){ 
-                str = Renamer.toFirstLetterWordUppercase(str, txfDelim.getText());
-            }
-        }
 
-        if(rbtnUpperExtension.isSelected()){
-            str = Renamer.toExtensionUppercase(str);
-        }
-        
-        if(rbtnLowerExtension.isSelected()){
-            str = Renamer.toExtensionLowercase(str);
-        }
-        
-        if(chkReplace.isSelected()){
-            str = str.replaceAll(txfReplaceThis.getText(), txfReplaceWith.getText());
-        }
-        
-        if(chkSpaces.isSelected()){
-            Object o = cmbSpaces.getSelectedItem();
-            
-            if(bundle.getString("espaciosAGuionesBajos").equals(o)){ 
-                str = str.replaceAll("\\ ", "\\_");
+            if (task.equals(RENAME_WITH_EXIF) && chkRenameWithExif.isSelected()) {
+                String name = str.toUpperCase();
+                if(name.endsWith(".JPG") || name.endsWith(".JPEG")){
+                    JIfdData exif = new JIfdData(file); 
+                    exif.getPixelXDimension();
+                    exif.getPixelYDimension();
+                    exif.getModel();
+                    exif.getMake();
+                    String pattern = txfExif.getText();
+                    pattern = pattern.replaceAll("\\{width\\}", String.valueOf(exif.getPixelXDimension()));
+                    pattern = pattern.replaceAll("\\{height\\}", String.valueOf(exif.getPixelYDimension()));                
+                    pattern = pattern.replaceAll("\\{dpih\\}", String.valueOf(exif.getXResolution() ));                
+                    pattern = pattern.replaceAll("\\{dpiv\\}", String.valueOf(exif.getYResolution()));                
+                    pattern = pattern.replaceAll("\\{make\\}", String.valueOf(exif.getMake()));                                
+                    pattern = pattern.replaceAll("\\{model\\}", String.valueOf(exif.getModel()));   
+                    Date d = JIfdData.getDateFromString(exif.getOriginalDateTime());
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(d);
+                    int year = c.get(Calendar.YEAR);
+                    int month = c.get(Calendar.MONTH);
+                    int day = c.get(Calendar.DAY_OF_MONTH);
+                    int hour = c.get(Calendar.HOUR_OF_DAY);
+                    int min = c.get(Calendar.MINUTE);
+                    int sec = c.get(Calendar.SECOND);
+                    pattern = pattern.replaceAll("\\{year\\}", String.valueOf(year));                                
+                    pattern = pattern.replaceAll("\\{month\\}", String.valueOf(month));                                
+                    pattern = pattern.replaceAll("\\{day\\}", String.valueOf(day));                                
+                    pattern = pattern.replaceAll("\\{hour\\}", String.valueOf(hour));                                
+                    pattern = pattern.replaceAll("\\{min\\}", String.valueOf(min));                                
+                    pattern = pattern.replaceAll("\\{sec\\}", String.valueOf(sec));                                
+                    str = pattern;
+                }
             }
-            else if(bundle.getString("guionesBajosAEspacios").equals(o)){ 
-                str = str.replaceAll("\\_", "\\ ");
+
+
+            if(task.equals(UPPERCASE) && rbtnUppercase.isSelected()){
+                str = Renamer.toUpperCase(str, (Integer)spUpperFrom.getValue(), (Integer)spUpperTo.getValue());
             }
-            else if(bundle.getString("espaciosAPuntos").equals(o)){ 
-                str = str.replaceAll("\\ ", "\\.");
+
+            if(task.equals(LOWERCASE) && rbtnLowercase.isSelected()){
+                str = Renamer.toLowerCase(str, (Integer)spLowerFrom.getValue(), (Integer)spLowerTo.getValue());
             }
-            else if(bundle.getString("puntosAEspacios").equals(o)){ 
-                str = str.replaceAll("\\.", "\\ ");
+
+            if(task.equals(CASE_REPLACE) && chkCaseReplace.isSelected()){
+                Object o = cmbCaseReplace.getSelectedItem();
+
+                if(bundle.getString("todasEnMayusculas").equals(o)){ 
+                    str = str.toUpperCase();
+                }
+                else if(bundle.getString("todasEnMinusculas").equals(o)){ 
+                    str = str.toLowerCase();
+                }
+                else if(bundle.getString("primeraLetraMayusculas").equals(o)){ 
+                    str = Renamer.toFirstLetterUppercase(str);
+                }
+                else if(bundle.getString("primeraLetraDeCadaPalabraEnMayusculas").equals(o)){ 
+                    str = Renamer.toFirstLetterWordUppercase(str, txfDelim.getText());
+                }
             }
-            else if(bundle.getString("espaciosAGuiones").equals(o)){ 
-                str = str.replaceAll("\\ ", "\\-");
+
+            if(task.equals(UPPER_EXTENSION) && rbtnUpperExtension.isSelected()){
+                str = Renamer.toExtensionUppercase(str);
             }
-            else if(bundle.getString("guionesAEspacios").equals(o)){ 
-                str = str.replaceAll("\\-", "\\ ");
+
+            if(task.equals(LOWER_EXTENSION) && rbtnLowerExtension.isSelected()){
+                str = Renamer.toExtensionLowercase(str);
             }
-        }
-        
-        if(chkAccents.isSelected()){
-            str = Renamer.deleteAccents(str);
-        }
-        
-        if(chkEnies.isSelected()){
-            String p;
-            if(str.indexOf("ñ") >= 0){
-                p = rbtnN.isSelected() ? "n" : "ni";
-                str = str.replaceAll("ñ", p);
+
+            if(task.equals(REPLACE) && chkReplace.isSelected()){
+                str = str.replaceAll(txfReplaceThis.getText(), txfReplaceWith.getText());
             }
-            else if(str.indexOf("Ñ") >= 0){
-                p = rbtnN.isSelected() ? "N" : "NI";
-                str = str.replaceAll("Ñ", p);
+
+            if(task.equals(SPACES) && chkSpaces.isSelected()){
+                Object o = cmbSpaces.getSelectedItem();
+
+                if(bundle.getString("espaciosAGuionesBajos").equals(o)){ 
+                    str = str.replaceAll("\\ ", "\\_");
+                }
+                else if(bundle.getString("guionesBajosAEspacios").equals(o)){ 
+                    str = str.replaceAll("\\_", "\\ ");
+                }
+                else if(bundle.getString("espaciosAPuntos").equals(o)){ 
+                    str = str.replaceAll("\\ ", "\\.");
+                }
+                else if(bundle.getString("puntosAEspacios").equals(o)){ 
+                    str = str.replaceAll("\\.", "\\ ");
+                }
+                else if(bundle.getString("espaciosAGuiones").equals(o)){ 
+                    str = str.replaceAll("\\ ", "\\-");
+                }
+                else if(bundle.getString("guionesAEspacios").equals(o)){ 
+                    str = str.replaceAll("\\-", "\\ ");
+                }
             }
-        }
-        
-        if(chkInsert.isSelected()){
-            str = Renamer.insert(str, txfInsert.getText(), 
-                    (Integer)spPosInsert.getValue(), chkInsertEnd.isSelected());
-        }
-        
-        if(chkDeleteFrom.isSelected()){
-            str = Renamer.delete(str, (Integer)spDeleteFrom.getValue(), 
-                    (Integer)spDeleteTo.getValue(), chkDeleteToEnd.isSelected());
-        }
-        
-        if(chkDeleteChars.isSelected()){
-            str = str.replaceAll(txfDelete.getText(), "");
-        }
-        
-        if(chkDeleteBrackets.isSelected()){
-            str = str.replaceAll("\\(", "");
-            str = str.replaceAll("\\)", "");
-        }
-        
-        if(chkDeleteMoreOneSpaces.isSelected()){
-            str = Renamer.deleteDobleSpaces(str);
-        }
-        
-        if(chkInsertNumbers.isSelected()){
-            int p =  (Integer)spPosAutoNumber.getValue();
-            if(p > 0){
-                str = Renamer.insert(str, args,p,false);            
+
+            if(task.equals(ACCENTS) && chkAccents.isSelected()){
+                str = Renamer.deleteAccents(str);
             }
-            else{
-                str = args + str;
+
+            if(task.equals(ENIES) && chkEnies.isSelected()){
+                String p;
+                if(str.indexOf("ñ") >= 0){
+                    p = rbtnN.isSelected() ? "n" : "ni";
+                    str = str.replaceAll("ñ", p);
+                }
+                else if(str.indexOf("Ñ") >= 0){
+                    p = rbtnN.isSelected() ? "N" : "NI";
+                    str = str.replaceAll("Ñ", p);
+                }
+            }
+
+            if(task.equals(INSERT) && chkInsert.isSelected()){
+                str = Renamer.insert(str, txfInsert.getText(), 
+                        (Integer)spPosInsert.getValue(), chkInsertEnd.isSelected());
+            }
+
+            if(task.equals(DELETE_FROM) && chkDeleteFrom.isSelected()){
+                str = Renamer.delete(str, (Integer)spDeleteFrom.getValue(), 
+                        (Integer)spDeleteTo.getValue(), chkDeleteToEnd.isSelected());
+            }
+
+            if(task.equals(DELETE_CHARS) && chkDeleteChars.isSelected()){
+                str = str.replaceAll(txfDelete.getText(), "");
+            }
+
+            if(task.equals(DELETE_BRACKETS) && chkDeleteBrackets.isSelected()){
+                str = str.replaceAll("\\(", "");
+                str = str.replaceAll("\\)", "");
+            }
+
+            if(task.equals(DELETE_MORE_ONE_SPACES) && chkDeleteMoreOneSpaces.isSelected()){
+                str = Renamer.deleteDobleSpaces(str);
+            }
+
+            if(task.equals(INSERT_NUMBERS) && chkInsertNumbers.isSelected()){
+                int p =  (Integer)spPosAutoNumber.getValue();
+                if(p > 0){
+                    str = Renamer.insert(str, args,p,false);            
+                }
+                else{
+                    str = args + str;
+                }
             }
         }
         
         return str;
     }
-    
 
+    /**
+     * Crea una lista con las tareas que hay q realizar
+     */
+    public void createTaskList(){
+        
+        if(chkRenameWithTag.isSelected() && (!tasksList.contains(RENAME_WITH_TAG))){
+            tasksList.add(RENAME_WITH_TAG);
+        }
+        
+        if (chkRenameWithExif.isSelected() && (!tasksList.contains(RENAME_WITH_EXIF))){
+            tasksList.add(RENAME_WITH_EXIF);
+        }
+        
+        if(rbtnUppercase.isSelected() && (!tasksList.contains(UPPERCASE))){
+            tasksList.add(UPPERCASE);
+        }
+        
+        if(rbtnLowercase.isSelected() && (!tasksList.contains(LOWERCASE))){
+            tasksList.add(LOWERCASE);
+        }
+        
+        if(chkCaseReplace.isSelected() && (!tasksList.contains(CASE_REPLACE))){
+            tasksList.add(CASE_REPLACE);
+        }
 
-    
-    public ArrayList<String> createTaskHash(){
-        ArrayList<String> lst = tp.getData();
-        
-        if(chkRenameWithTag.isSelected() && (!lst.contains(RENAME_WITH_TAG))){
-            lst.add(RENAME_WITH_TAG);
+        if(rbtnUpperExtension.isSelected() && (!tasksList.contains(UPPER_EXTENSION))){
+            tasksList.add(UPPER_EXTENSION);
         }
         
-        if (chkRenameWithExif.isSelected() && (!lst.contains(RENAME_WITH_EXIF))){
-            lst.add(RENAME_WITH_EXIF);
+        if(rbtnLowerExtension.isSelected() && (!tasksList.contains(LOWER_EXTENSION))){
+            tasksList.add(LOWER_EXTENSION);
         }
         
-        if(rbtnUppercase.isSelected() && (!lst.contains(UPPERCASE))){
-            lst.add(UPPERCASE);
+        if(chkReplace.isSelected() && (!tasksList.contains(REPLACE))){
+            tasksList.add(REPLACE);
         }
         
-        if(rbtnLowercase.isSelected() && (!lst.contains(LOWERCASE))){
-            lst.add(LOWERCASE);
+        if(chkSpaces.isSelected() && (!tasksList.contains(SPACES))){
+            tasksList.add(SPACES);
         }
         
-        if(chkCaseReplace.isSelected() && (!lst.contains(CASE_REPLACE))){
-            lst.add(CASE_REPLACE);
-        }
-
-        if(rbtnUpperExtension.isSelected() && (!lst.contains(UPPER_EXTENSION))){
-            lst.add(UPPER_EXTENSION);
+        if(chkAccents.isSelected() && (!tasksList.contains(ACCENTS))){
+            tasksList.add(ACCENTS);
         }
         
-        if(rbtnLowerExtension.isSelected() && (!lst.contains(LOWER_EXTENSION))){
-            lst.add(LOWER_EXTENSION);
+        if(chkEnies.isSelected() && (!tasksList.contains(ENIES))){
+            tasksList.add(ENIES);
         }
         
-        if(chkReplace.isSelected() && (!lst.contains(REPLACE))){
-            lst.add(REPLACE);
+        if(chkInsert.isSelected() && (!tasksList.contains(INSERT))){
+            tasksList.add(INSERT);
         }
         
-        if(chkSpaces.isSelected() && (!lst.contains(SPACES))){
-            lst.add(SPACES);
+        if(chkDeleteFrom.isSelected() && (!tasksList.contains(DELETE_FROM))){
+            tasksList.add(DELETE_FROM);
         }
         
-        if(chkAccents.isSelected() && (!lst.contains(ACCENTS))){
-            lst.add(ACCENTS);
+        if(chkDeleteChars.isSelected() && (!tasksList.contains(DELETE_CHARS))){
+            tasksList.add(DELETE_CHARS);
         }
         
-        if(chkEnies.isSelected() && (!lst.contains(ENIES))){
-            lst.add(ENIES);
+        if(chkDeleteBrackets.isSelected() && (!tasksList.contains(DELETE_BRACKETS))){
+            tasksList.add(DELETE_BRACKETS);
         }
         
-        if(chkInsert.isSelected() && (!lst.contains(INSERT))){
-            lst.add(INSERT);
+        if(chkDeleteMoreOneSpaces.isSelected() && (!tasksList.contains(DELETE_MORE_ONE_SPACES))){
+            tasksList.add(DELETE_MORE_ONE_SPACES);
         }
         
-        if(chkDeleteFrom.isSelected() && (!lst.contains(DELETE_FROM))){
-            lst.add(DELETE_FROM);
+        if(chkInsertNumbers.isSelected() && (!tasksList.contains(INSERT_NUMBERS))){
+            tasksList.add(INSERT_NUMBERS);
         }
-        
-        if(chkDeleteChars.isSelected() && (!lst.contains(DELETE_CHARS))){
-            lst.add(DELETE_CHARS);
-        }
-        
-        if(chkDeleteBrackets.isSelected() && (!lst.contains(DELETE_BRACKETS))){
-            lst.add(DELETE_BRACKETS);
-        }
-        
-        if(chkDeleteMoreOneSpaces.isSelected() && (!lst.contains(DELETE_MORE_ONE_SPACES))){
-            lst.add(DELETE_MORE_ONE_SPACES);
-        }
-        
-        if(chkInsertNumbers.isSelected() && (!lst.contains(INSERT_NUMBERS))){
-            lst.add(INSERT_NUMBERS);
-        }
-        
-        return lst;
     }
     
+    /**
+     * Se crean las descripciones de las tareas a ejecutar
+     */
     private void createDescriptionTasks(){
-        tasks.clear();
-        tasks.put("RenameWithTag",chkRenameWithTag.getText());
-        tasks.put("RenameWithExif", chkRenameWithExif.getText());
-        tasks.put("Uppercase",rbtnUppercase.getText());
-        tasks.put("Lowercase",rbtnLowercase.getText());
+        tasksDescriptions.clear();
+        tasksDescriptions.put("RenameWithTag",chkRenameWithTag.getText());
+        tasksDescriptions.put("RenameWithExif", chkRenameWithExif.getText());
+        tasksDescriptions.put("Uppercase",rbtnUppercase.getText());
+        tasksDescriptions.put("Lowercase",rbtnLowercase.getText());
         Object o = cmbCaseReplace.getSelectedItem();
         if(o != null){
-            tasks.put("CaseReplace",o.toString());
+            tasksDescriptions.put("CaseReplace",o.toString());
         }
-        tasks.put("UpperExtension",rbtnUpperExtension.getText());
-        tasks.put("LowerExtension",rbtnLowerExtension.getText());
-        tasks.put("Replace",chkReplace.getText());
+        tasksDescriptions.put("UpperExtension",rbtnUpperExtension.getText());
+        tasksDescriptions.put("LowerExtension",rbtnLowerExtension.getText());
+        tasksDescriptions.put("Replace",chkReplace.getText());
         o = cmbSpaces.getSelectedItem();
         if(o != null){
-            tasks.put("Spaces",o.toString());
+            tasksDescriptions.put("Spaces",o.toString());
         }
-        tasks.put("Accents",chkAccents.getText());
-        tasks.put("Enies",chkEnies.getText());
-        tasks.put("Insert",chkInsert.getText());
-        tasks.put("DeleteFrom",chkDeleteFrom.getText());
-        tasks.put("DeleteChars",chkDeleteChars.getText());
-        tasks.put("DeleteBrackets",chkDeleteBrackets.getText());
-        tasks.put("DeleteMoreOneSpaces",chkDeleteMoreOneSpaces.getText());
-        tasks.put("InsertNumbers",chkInsertNumbers.getText());
+        tasksDescriptions.put("Accents",chkAccents.getText());
+        tasksDescriptions.put("Enies",chkEnies.getText());
+        tasksDescriptions.put("Insert",chkInsert.getText());
+        tasksDescriptions.put("DeleteFrom",chkDeleteFrom.getText());
+        tasksDescriptions.put("DeleteChars",chkDeleteChars.getText());
+        tasksDescriptions.put("DeleteBrackets",chkDeleteBrackets.getText());
+        tasksDescriptions.put("DeleteMoreOneSpaces",chkDeleteMoreOneSpaces.getText());
+        tasksDescriptions.put("InsertNumbers",chkInsertNumbers.getText());
     }
     
     private void deshacer(){
@@ -1535,22 +1541,23 @@ private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         rbtnNi.setSelected(true);
         spDeleteTo.setValue(1);
     }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-//        try {
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//        }
-//        catch (ClassNotFoundException ex) {
-//           LOG.log(Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//           LOG.log(Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//           LOG.log(Level.SEVERE, null, ex);
-//        } catch (UnsupportedLookAndFeelException ex) {
-//           LOG.log(Level.SEVERE, null, ex);
-//        }       
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (ClassNotFoundException ex) {
+           LOG.log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+           LOG.log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+           LOG.log(Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+           LOG.log(Level.SEVERE, null, ex);
+        }       
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
