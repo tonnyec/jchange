@@ -1,10 +1,16 @@
 /*
- * ExifJPanel.java
+ * TagJPanel.java
  *
- * Created on 18 de julio de 2008, 14:12
+ * Created on 16 de julio de 2008, 16:33
  */
-
 package com.cartiec.jrenamer;
+
+import com.cartiec.jrenamer.tags.TagID3;
+import jexifviewer.JIfdData;
+import org.blinkenlights.jid3.ID3Exception;
+import org.blinkenlights.jid3.v1.ID3V1Tag.Genre;
+import org.blinkenlights.jid3.v1.ID3V1_0Tag;
+import org.blinkenlights.jid3.v2.ID3V2_3_0Tag;
 
 /**
  *
@@ -12,9 +18,36 @@ package com.cartiec.jrenamer;
  */
 public class ExifJPanel extends javax.swing.JPanel {
 
+    private String xdim = null;
+    private String ydim = null;
+    private String dpih = null;
+    private String dpiv = null;
+    private String make = null;  
+    private String model = null;  
+    private String date = null;
+
     /** Creates new form ExifJPanel */
     public ExifJPanel() {
         initComponents();
+    }
+
+    public boolean load(JIfdData exif) {
+        xdim = String.valueOf(exif.getPixelXDimension());
+        ydim = String.valueOf(exif.getPixelYDimension());
+        dpih = String.valueOf(exif.getXResolution());
+        dpiv = String.valueOf(exif.getYResolution());
+        make = String.valueOf(exif.getMake());  
+        model = String.valueOf(exif.getModel());  
+        date = exif.getOriginalDateTime();
+
+        txfWidth.setText(xdim);
+        txfHeight.setText(ydim);
+        txfDpiHorizontal.setText(dpih);
+        txfDpiVertical.setText(dpiv);
+        txfCamara.setText(make);
+        txfModelo.setText(model);
+        txfDateTime.setText(date);
+        return (exif != null);
     }
 
     /** This method is called from within the constructor to
@@ -26,20 +59,130 @@ public class ExifJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblWidth = new javax.swing.JLabel();
+        txfWidth = new javax.swing.JTextField();
+        lblHeight = new javax.swing.JLabel();
+        txfHeight = new javax.swing.JTextField();
+        lblDpiHorizontal = new javax.swing.JLabel();
+        txfDpiHorizontal = new javax.swing.JTextField();
+        lblDpiVertical = new javax.swing.JLabel();
+        txfDpiVertical = new javax.swing.JTextField();
+        lblCamara = new javax.swing.JLabel();
+        txfCamara = new javax.swing.JTextField();
+        lblModelo = new javax.swing.JLabel();
+        txfModelo = new javax.swing.JTextField();
+        lblDateTime = new javax.swing.JLabel();
+        txfDateTime = new javax.swing.JTextField();
+
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame"); // NOI18N
+        lblWidth.setText(bundle.getString("Ancho")); // NOI18N
+
+        txfWidth.setEditable(false);
+
+        lblHeight.setText(bundle.getString("Alto")); // NOI18N
+
+        txfHeight.setEditable(false);
+
+        lblDpiHorizontal.setText(bundle.getString("DPI Horizontal")); // NOI18N
+
+        txfDpiHorizontal.setEditable(false);
+
+        lblDpiVertical.setText(bundle.getString("DPI Vertical")); // NOI18N
+
+        txfDpiVertical.setEditable(false);
+
+        lblCamara.setText(bundle.getString("Cámara")); // NOI18N
+
+        txfCamara.setEditable(false);
+
+        lblModelo.setText(bundle.getString("Modelo")); // NOI18N
+
+        txfModelo.setEditable(false);
+
+        lblDateTime.setText(bundle.getString("Archivo")); // NOI18N
+
+        txfDateTime.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 256, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lblCamara, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblModelo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lblDateTime)
+                            .addComponent(lblHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(17, 17, 17))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblDpiVertical, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                            .addComponent(lblDpiHorizontal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txfDateTime)
+                    .addComponent(txfModelo)
+                    .addComponent(txfCamara)
+                    .addComponent(txfDpiVertical)
+                    .addComponent(txfWidth)
+                    .addComponent(txfHeight)
+                    .addComponent(txfDpiHorizontal, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 255, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblWidth)
+                    .addComponent(txfWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblHeight)
+                    .addComponent(txfHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txfDpiHorizontal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDpiHorizontal))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txfDpiVertical, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDpiVertical))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCamara)
+                    .addComponent(txfCamara, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblModelo)
+                    .addComponent(txfModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDateTime)
+                    .addComponent(txfDateTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel lblCamara;
+    private javax.swing.JLabel lblDateTime;
+    private javax.swing.JLabel lblDpiHorizontal;
+    private javax.swing.JLabel lblDpiVertical;
+    private javax.swing.JLabel lblHeight;
+    private javax.swing.JLabel lblModelo;
+    private javax.swing.JLabel lblWidth;
+    private javax.swing.JTextField txfCamara;
+    private javax.swing.JTextField txfDateTime;
+    private javax.swing.JTextField txfDpiHorizontal;
+    private javax.swing.JTextField txfDpiVertical;
+    private javax.swing.JTextField txfHeight;
+    private javax.swing.JTextField txfModelo;
+    private javax.swing.JTextField txfWidth;
     // End of variables declaration//GEN-END:variables
-
 }
