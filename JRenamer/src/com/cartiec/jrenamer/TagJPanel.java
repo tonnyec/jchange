@@ -1,7 +1,7 @@
 /*
- * TagJPanel.java
+ * ExifJPanel.java
  *
- * Created on 16 de julio de 2008, 16:33
+ * Created on 18 de julio de 2008, 14:12
  */
 package com.cartiec.jrenamer;
 
@@ -21,7 +21,7 @@ public class TagJPanel extends javax.swing.JPanel {
     private String artist = null;
     private String album = null;
     private String genre = null;
-    private String year = null;  
+    private String year = null;
     private String comment = null;
 
     /** Creates new form TagJPanel */
@@ -87,61 +87,55 @@ public class TagJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblYear = new javax.swing.JLabel();
+        lblComment = new javax.swing.JLabel();
+        lblFile = new javax.swing.JLabel();
+        lblGenre = new javax.swing.JLabel();
+        lblAlbum = new javax.swing.JLabel();
+        lblArtist = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
         txfTitle = new javax.swing.JTextField();
-        lblArtist = new javax.swing.JLabel();
         txfArtist = new javax.swing.JTextField();
-        lblAlbum = new javax.swing.JLabel();
         txfAlbum = new javax.swing.JTextField();
-        lblGenre = new javax.swing.JLabel();
         txfGenre = new javax.swing.JTextField();
-        lblYear = new javax.swing.JLabel();
-        txfYear = new javax.swing.JTextField();
-        lblComment = new javax.swing.JLabel();
-        txfComment = new javax.swing.JTextField();
-        lblFile = new javax.swing.JLabel();
         txfFile = new javax.swing.JTextField();
+        txfComment = new javax.swing.JTextField();
+        txfYear = new javax.swing.JTextField();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/cartiec/jrenamer/MainJFrame"); // NOI18N
-        lblTitle.setText(bundle.getString("Título")); // NOI18N
-
-        txfTitle.setBackground(new java.awt.Color(255, 255, 255));
-        txfTitle.setEditable(false);
-
-        lblArtist.setText(bundle.getString("Artista")); // NOI18N
-
-        txfArtist.setBackground(new java.awt.Color(255, 255, 255));
-        txfArtist.setEditable(false);
-
-        lblAlbum.setText(bundle.getString("Album")); // NOI18N
-
-        txfAlbum.setBackground(new java.awt.Color(255, 255, 255));
-        txfAlbum.setEditable(false);
-
-        lblGenre.setText(bundle.getString("Género")); // NOI18N
-
-        txfGenre.setBackground(new java.awt.Color(255, 255, 255));
-        txfGenre.setEditable(false);
-
         lblYear.setText(bundle.getString("Año")); // NOI18N
-
-        txfYear.setBackground(new java.awt.Color(255, 255, 255));
-        txfYear.setEditable(false);
 
         lblComment.setText(bundle.getString("Comentario")); // NOI18N
 
-        txfComment.setBackground(new java.awt.Color(255, 255, 255));
-        txfComment.setEditable(false);
-
         lblFile.setText(bundle.getString("Archivo")); // NOI18N
 
-        txfFile.setBackground(new java.awt.Color(255, 255, 255));
+        lblGenre.setText(bundle.getString("Género")); // NOI18N
+
+        lblAlbum.setText(bundle.getString("Album")); // NOI18N
+
+        lblArtist.setText(bundle.getString("Artista")); // NOI18N
+
+        lblTitle.setText(bundle.getString("Título")); // NOI18N
+
+        txfTitle.setEditable(false);
+
+        txfArtist.setEditable(false);
+
+        txfAlbum.setEditable(false);
+
+        txfGenre.setEditable(false);
+
         txfFile.setEditable(false);
+
+        txfComment.setEditable(false);
+
+        txfYear.setEditable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 256, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -155,17 +149,18 @@ public class TagJPanel extends javax.swing.JPanel {
                     .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txfTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                    .addComponent(txfArtist, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                    .addComponent(txfAlbum, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                    .addComponent(txfGenre, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                    .addComponent(txfFile, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                    .addComponent(txfComment, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                    .addComponent(txfYear, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
+                    .addComponent(txfTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                    .addComponent(txfArtist, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                    .addComponent(txfAlbum, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                    .addComponent(txfGenre, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                    .addComponent(txfFile, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                    .addComponent(txfComment, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                    .addComponent(txfYear, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 198, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

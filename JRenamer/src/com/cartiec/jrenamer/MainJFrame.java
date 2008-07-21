@@ -431,6 +431,7 @@ public class MainJFrame extends javax.swing.JFrame {
         changeCasePanel.add(chkCaseReplace, gridBagConstraints);
 
         txfDelim.setText(" ");
+        txfDelim.setToolTipText(bundle.getString("Delimitador")); // NOI18N
         txfDelim.setPreferredSize(new java.awt.Dimension(50, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 7;
@@ -1033,53 +1034,69 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-		if (chkShowTag.isSelected()) {
-			int r = table.getSelectedRow();
-			File f = (File) ((DefaultTableModel) table.getModel()).getValueAt(r, 1);
-			TagID3 tag = new TagID3();
-			tag.readTags(f);
-			TagJPanel tagJPanel = new TagJPanel();
-			if (tagJPanel.load(tag)) {
-				popupMenu.removeAll();
-				popupMenu.add(tagJPanel);
-				popupMenu.show(table, evt.getX() + 15,
-						evt.getY());
-			}
-		}
+        int r = table.getSelectedRow();
+        File f = (File) ((DefaultTableModel) table.getModel()).getValueAt(r, 1);
+        Component c = null;
+        String fileName = f.getName().toUpperCase();
+        if (chkShowTag.isSelected()) {
+            if(fileName.endsWith(".MP3")){
+                TagID3 tag = new TagID3();
+                tag.readTags(f);
+                TagJPanel tagJPanel = new TagJPanel();
+                if (tagJPanel.load(tag)) {
+                     c = tagJPanel;   
+                }
+            }
+        }
+        if(chkShowExif.isSelected()){
+           if(fileName.endsWith(".JPG") || fileName.endsWith(".JPEG")){
+                JIfdData exif = new JIfdData(f);
+                ExifJPanel exifJPanel = new ExifJPanel();
+                exifJPanel.load(exif);
+                c = exifJPanel;
+           }
+        }
+        
+        if(c != null){
+            popupMenu.removeAll();
+            popupMenu.add(c);
+            popupMenu.show(table, evt.getX() + 15,
+                            evt.getY());
+        }
     }//GEN-LAST:event_tableMouseClicked
 
     private void lstTagId3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstTagId3MouseClicked
-		if (evt.getClickCount() == 2) {
-			Object o = lstTagId3.getSelectedValue();
-			if (o instanceof String2) {
-				txfTag.setText(txfTag.getText() + ((String2) o).getKey());
-			}
-		}
+        if (evt.getClickCount() == 2) {
+            Object o = lstTagId3.getSelectedValue();
+            if (o instanceof String2) {
+                    txfTag.setText(txfTag.getText() + ((String2) o).getKey());
+            }
+        }
     }//GEN-LAST:event_lstTagId3MouseClicked
 
     private void btnSpaceGuionSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSpaceGuionSpaceActionPerformed
-		JTextField txf = (evt.getSource() == btnSpaceGuionSpace1) ? txfExif : txfTag;
-		txf.setText(txf.getText() + " - ");
+        JTextField txf = (evt.getSource() == btnSpaceGuionSpace1) ? txfExif : txfTag;
+        txf.setText(txf.getText() + " - ");
     }//GEN-LAST:event_btnSpaceGuionSpaceActionPerformed
 
     private void txfTagMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txfTagMouseClicked
-		if (evt.getClickCount() == 2) {
-			JTextField txf = (JTextField) evt.getSource();
-			txf.setText("");
-		}
+        if (evt.getClickCount() == 2) {
+            JTextField txf = (JTextField) evt.getSource();
+            txf.setText("");
+        }
     }//GEN-LAST:event_txfTagMouseClicked
 
     private void lstExifMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstExifMouseClicked
-		if (evt.getClickCount() == 2) {
-			Object o = lstExif.getSelectedValue();
-			if (o instanceof String2) {
-				txfExif.setText(txfExif.getText() + ((String2) o).getKey());
-			}
-		}
+        if (evt.getClickCount() == 2) {
+            Object o = lstExif.getSelectedValue();
+            if (o instanceof String2) {
+                    txfExif.setText(txfExif.getText() + ((String2) o).getKey());
+            }
+        }
     }//GEN-LAST:event_lstExifMouseClicked
 
     private void txfRenameWithDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfRenameWithDateActionPerformed
-		txfExif.setText("{year}-{month}-{day}_{hour}.{min}.{sec}");
+        txfExif.setText("{year}-{month}-{day}_{hour}.{min}.{sec}");
     }//GEN-LAST:event_txfRenameWithDateActionPerformed
 
     private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
@@ -1249,10 +1266,6 @@ public class MainJFrame extends javax.swing.JFrame {
                 String name = str.toUpperCase();
                 if(name.endsWith(".JPG") || name.endsWith(".JPEG")){
                     JIfdData exif = new JIfdData(file); 
-                    exif.getPixelXDimension();
-                    exif.getPixelYDimension();
-                    exif.getModel();
-                    exif.getMake();
                     String pattern = txfExif.getText();
                     pattern = pattern.replaceAll("\\{width\\}", String.valueOf(exif.getPixelXDimension()));
                     pattern = pattern.replaceAll("\\{height\\}", String.valueOf(exif.getPixelYDimension()));                
@@ -1546,18 +1559,18 @@ public class MainJFrame extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (ClassNotFoundException ex) {
-           LOG.log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-           LOG.log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-           LOG.log(Level.SEVERE, null, ex);
-        } catch (UnsupportedLookAndFeelException ex) {
-           LOG.log(Level.SEVERE, null, ex);
-        }       
+//        try {
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        }
+//        catch (ClassNotFoundException ex) {
+//           LOG.log(Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//           LOG.log(Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//           LOG.log(Level.SEVERE, null, ex);
+//        } catch (UnsupportedLookAndFeelException ex) {
+//           LOG.log(Level.SEVERE, null, ex);
+//        }       
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {

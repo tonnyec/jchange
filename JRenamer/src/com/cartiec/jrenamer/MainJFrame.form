@@ -344,6 +344,9 @@
                 <Component class="javax.swing.JTextField" name="txfDelim">
                   <Properties>
                     <Property name="text" type="java.lang.String" value=" "/>
+                    <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="com/cartiec/jrenamer/MainJFrame.properties" key="Delimitador" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[50, 20]"/>
                     </Property>
