@@ -973,6 +973,8 @@ public class MainJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
+        createTaskList();
+        createDescriptionTasks(); 
         previewTable();
     }//GEN-LAST:event_btnPreviewActionPerformed
 
@@ -1410,7 +1412,7 @@ public class MainJFrame extends javax.swing.JFrame {
      * Crea una lista con las tareas que hay q realizar
      */
     public void createTaskList(){
-        
+        tasksList.clear();
         if(chkRenameWithTag.isSelected() && (!tasksList.contains(RENAME_WITH_TAG))){
             tasksList.add(RENAME_WITH_TAG);
         }
