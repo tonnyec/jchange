@@ -5,12 +5,7 @@
  */
 package com.cartiec.jrenamer;
 
-import com.cartiec.jrenamer.tags.TagID3;
 import jexifviewer.JIfdData;
-import org.blinkenlights.jid3.ID3Exception;
-import org.blinkenlights.jid3.v1.ID3V1Tag.Genre;
-import org.blinkenlights.jid3.v1.ID3V1_0Tag;
-import org.blinkenlights.jid3.v2.ID3V2_3_0Tag;
 
 /**
  *
@@ -99,7 +94,7 @@ public class ExifJPanel extends javax.swing.JPanel {
 
         txfModelo.setEditable(false);
 
-        lblDateTime.setText(bundle.getString("Archivo")); // NOI18N
+        lblDateTime.setText(bundle.getString("Fecha Hora")); // NOI18N
 
         txfDateTime.setEditable(false);
 

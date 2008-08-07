@@ -63,7 +63,7 @@ public class TagID3 {
                 }
             }
         } catch (ID3Exception e1) {
-            e1.printStackTrace();
+            
         }
         setTags();
     }

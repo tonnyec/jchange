@@ -28,10 +28,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import jexifviewer.JExifTag;
 import jexifviewer.JIfdData;
 
 /**
@@ -49,10 +51,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private AbstractListModel lstTagId3Model;
     private AbstractListModel lstExifModel;
     private ArrayList<String> tasksList = new ArrayList<String>();
-    private HashMap<String,String> tasksDescriptions = new HashMap<String, String>(17);
+    private HashMap<String, String> tasksDescriptions = new HashMap<String, String>(17);
     private TaskJPanel tp = new TaskJPanel();
-    
-    
     public static final String RENAME_WITH_TAG = "RenameWithTag";
     public static final String RENAME_WITH_EXIF = "RenameWithExif";
     public static final String UPPERCASE = "Uppercase";
@@ -75,7 +75,7 @@ public class MainJFrame extends javax.swing.JFrame {
         try {
             FileHandler logFile = new FileHandler("log.txt");
             logFile.setFormatter(new SimpleFormatter());
-            LOG.addHandler(logFile);            
+            LOG.addHandler(logFile);
 
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -158,7 +158,7 @@ public class MainJFrame extends javax.swing.JFrame {
         table.setDefaultRenderer(String.class, fcrenderer);
         table.setDefaultRenderer(Boolean.class, fcrenderer);
         table.setDefaultRenderer(Object.class, fcrenderer);
-        createDescriptionTasks();        
+        createDescriptionTasks();
     }
 
     @SuppressWarnings("unchecked")
@@ -549,7 +549,7 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
         insertPanel.add(chkInsertEnd, gridBagConstraints);
 
-        chkInsertNumbers.setText(bundle.getString("Insertar Números")); // NOI18N
+        chkInsertNumbers.setText(bundle.getString("Insertar números")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -588,7 +588,7 @@ public class MainJFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
         insertPanel.add(spStartAutoNumber, gridBagConstraints);
 
-        chkEqualLenDigits.setText(bundle.getString("crear siempre con digitos iguales")); // NOI18N
+        chkEqualLenDigits.setText(bundle.getString("crear con digitos iguales")); // NOI18N
         chkEqualLenDigits.setToolTipText("<html>\n01, 02, 03<br>\n001, 002, 003\n</html>");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 8;
@@ -974,7 +974,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
         createTaskList();
-        createDescriptionTasks(); 
+        createDescriptionTasks();
         previewTable();
     }//GEN-LAST:event_btnPreviewActionPerformed
 
@@ -1018,8 +1018,8 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRenameActionPerformed
 
     private void btnUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUndoActionPerformed
-		if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmarDeshacer"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            deshacer();
+        if (JOptionPane.showConfirmDialog(this, bundle.getString("confirmarDeshacer"), getTitle(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            undo();
         }
     }//GEN-LAST:event_btnUndoActionPerformed
 
@@ -1041,29 +1041,38 @@ public class MainJFrame extends javax.swing.JFrame {
         Component c = null;
         String fileName = f.getName().toUpperCase();
         if (chkShowTag.isSelected()) {
-            if(fileName.endsWith(".MP3")){
+            if (fileName.endsWith(".MP3")) {
                 TagID3 tag = new TagID3();
                 tag.readTags(f);
                 TagJPanel tagJPanel = new TagJPanel();
                 if (tagJPanel.load(tag)) {
-                     c = tagJPanel;   
+                    c = tagJPanel;
+                }else{
+                    JOptionPane.showMessageDialog(this, 
+                            bundle.getString("No contiene informacion TAG"));
                 }
             }
         }
-        if(chkShowExif.isSelected()){
-           if(fileName.endsWith(".JPG") || fileName.endsWith(".JPEG")){
+        if (chkShowExif.isSelected()) {
+            if (fileName.endsWith(".JPG") || fileName.endsWith(".JPEG")) {
                 JIfdData exif = new JIfdData(f);
-                ExifJPanel exifJPanel = new ExifJPanel();
-                exifJPanel.load(exif);
-                c = exifJPanel;
-           }
+                
+                if(exif.getPixelXDimension() > 0){
+                    ExifJPanel exifJPanel = new ExifJPanel();
+                    exifJPanel.load(exif);
+                    c = exifJPanel;
+                }else{
+                    JOptionPane.showMessageDialog(this, 
+                            bundle.getString("No contiene informacion EXIF"));
+                }
+            }
         }
-        
-        if(c != null){
+
+        if (c != null) {
             popupMenu.removeAll();
             popupMenu.add(c);
             popupMenu.show(table, evt.getX() + 15,
-                            evt.getY());
+                    evt.getY());
         }
     }//GEN-LAST:event_tableMouseClicked
 
@@ -1071,7 +1080,7 @@ public class MainJFrame extends javax.swing.JFrame {
         if (evt.getClickCount() == 2) {
             Object o = lstTagId3.getSelectedValue();
             if (o instanceof String2) {
-                    txfTag.setText(txfTag.getText() + ((String2) o).getKey());
+                txfTag.setText(txfTag.getText() + ((String2) o).getKey());
             }
         }
     }//GEN-LAST:event_lstTagId3MouseClicked
@@ -1092,7 +1101,7 @@ public class MainJFrame extends javax.swing.JFrame {
         if (evt.getClickCount() == 2) {
             Object o = lstExif.getSelectedValue();
             if (o instanceof String2) {
-                    txfExif.setText(txfExif.getText() + ((String2) o).getKey());
+                txfExif.setText(txfExif.getText() + ((String2) o).getKey());
             }
         }
     }//GEN-LAST:event_lstExifMouseClicked
@@ -1103,13 +1112,13 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
         createTaskList();
-        createDescriptionTasks();        
-        tp.setTasksDescriptions(tasksDescriptions); 
-        tp.setData(tasksList);        
+        createDescriptionTasks();
+        tp.setTasksDescriptions(tasksDescriptions);
+        tp.setData(tasksList);
         popupMenu.removeAll();
-        popupMenu.add(tp);   
-        popupMenu.show(this, getWidth()/2 - tp.getWidth()/2 ,
-                getHeight()/2 - tp.getHeight()/2);
+        popupMenu.add(tp);
+        popupMenu.show(this, getWidth() / 2 - tp.getWidth() / 2,
+                getHeight() / 2 - tp.getHeight() / 2);
     }//GEN-LAST:event_btnOrderActionPerformed
   
     /**
@@ -1243,8 +1252,15 @@ public class MainJFrame extends javax.swing.JFrame {
                 addToTable(myFile);
             }
         }
+        
     }
 
+    /**
+     * rename filename with selected patterns 
+     * @param file file to rename
+     * @param args arguments for insert
+     * @return
+     */
     private String renameItem(File file,String args) {
         String str = file.getName();        
         for (int i = 0; i < tasksList.size(); i++) {
@@ -1266,31 +1282,46 @@ public class MainJFrame extends javax.swing.JFrame {
 
             if (task.equals(RENAME_WITH_EXIF) && chkRenameWithExif.isSelected()) {
                 String name = str.toUpperCase();
-                if(name.endsWith(".JPG") || name.endsWith(".JPEG")){
+                if(name.endsWith(".JPG") || name.endsWith(".JPEG")){                    
                     JIfdData exif = new JIfdData(file); 
-                    String pattern = txfExif.getText();
-                    pattern = pattern.replaceAll("\\{width\\}", String.valueOf(exif.getPixelXDimension()));
-                    pattern = pattern.replaceAll("\\{height\\}", String.valueOf(exif.getPixelYDimension()));                
-                    pattern = pattern.replaceAll("\\{dpih\\}", String.valueOf(exif.getXResolution() ));                
-                    pattern = pattern.replaceAll("\\{dpiv\\}", String.valueOf(exif.getYResolution()));                
-                    pattern = pattern.replaceAll("\\{make\\}", String.valueOf(exif.getMake()));                                
-                    pattern = pattern.replaceAll("\\{model\\}", String.valueOf(exif.getModel()));   
-                    Date d = JIfdData.getDateFromString(exif.getOriginalDateTime());
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(d);
-                    int year = c.get(Calendar.YEAR);
-                    int month = c.get(Calendar.MONTH);
-                    int day = c.get(Calendar.DAY_OF_MONTH);
-                    int hour = c.get(Calendar.HOUR_OF_DAY);
-                    int min = c.get(Calendar.MINUTE);
-                    int sec = c.get(Calendar.SECOND);
-                    pattern = pattern.replaceAll("\\{year\\}", String.valueOf(year));                                
-                    pattern = pattern.replaceAll("\\{month\\}", String.valueOf(month));                                
-                    pattern = pattern.replaceAll("\\{day\\}", String.valueOf(day));                                
-                    pattern = pattern.replaceAll("\\{hour\\}", String.valueOf(hour));                                
-                    pattern = pattern.replaceAll("\\{min\\}", String.valueOf(min));                                
-                    pattern = pattern.replaceAll("\\{sec\\}", String.valueOf(sec));                                
-                    str = pattern;
+                    if(exif.getPixelXDimension() > 0){
+                        String pattern = txfExif.getText();
+                        pattern = pattern.replaceAll("\\{width\\}", String.valueOf(exif.getPixelXDimension()));
+                        pattern = pattern.replaceAll("\\{height\\}", String.valueOf(exif.getPixelYDimension()));                
+                        pattern = pattern.replaceAll("\\{dpih\\}", String.valueOf(exif.getXResolution() ));                
+                        pattern = pattern.replaceAll("\\{dpiv\\}", String.valueOf(exif.getYResolution()));                
+                        pattern = pattern.replaceAll("\\{make\\}", String.valueOf(exif.getMake()));                                
+                        pattern = pattern.replaceAll("\\{model\\}", String.valueOf(exif.getModel()));   
+                        String dt = exif.getOriginalDateTime();
+                        if((dt != null) && !dt.equals("")){
+                            Date d = JIfdData.getDateFromString(dt);
+                            Calendar c = Calendar.getInstance();
+                            c.setTime(d);
+                            int year = c.get(Calendar.YEAR);
+                            int month = c.get(Calendar.MONTH);
+                            int day = c.get(Calendar.DAY_OF_MONTH);
+                            int hour = c.get(Calendar.HOUR_OF_DAY);
+                            int min = c.get(Calendar.MINUTE);
+                            int sec = c.get(Calendar.SECOND);
+                            pattern = pattern.replaceAll("\\{year\\}", String.valueOf(year));                                
+                            pattern = pattern.replaceAll("\\{month\\}", String.valueOf(month));                                
+                            pattern = pattern.replaceAll("\\{day\\}", String.valueOf(day));                                
+                            pattern = pattern.replaceAll("\\{hour\\}", String.valueOf(hour));                                
+                            pattern = pattern.replaceAll("\\{min\\}", String.valueOf(min));                                
+                            pattern = pattern.replaceAll("\\{sec\\}", String.valueOf(sec));                                
+                        }
+                        else{                            
+                            pattern = pattern.replaceAll(
+                                    "\\{year\\}-\\{month\\}-\\{day\\}_\\{hour\\}.\\{min\\}.\\{sec\\}", "");                                
+                            pattern = pattern.replaceAll("\\{year\\}", "");                                
+                            pattern = pattern.replaceAll("\\{month\\}", "");                                
+                            pattern = pattern.replaceAll("\\{day\\}", "");                                
+                            pattern = pattern.replaceAll("\\{hour\\}", "");                                
+                            pattern = pattern.replaceAll("\\{min\\}", "");                                
+                            pattern = pattern.replaceAll("\\{sec\\}", "");                                
+                        }
+                        str = pattern;
+                    }
                 }
             }
 
@@ -1411,74 +1442,42 @@ public class MainJFrame extends javax.swing.JFrame {
     /**
      * Crea una lista con las tareas que hay q realizar
      */
-    public void createTaskList(){
-        tasksList.clear();
-        if(chkRenameWithTag.isSelected() && (!tasksList.contains(RENAME_WITH_TAG))){
-            tasksList.add(RENAME_WITH_TAG);
-        }
+    public void createTaskList(){        
+        Object[][] controls = 
+                new Object[][]{
+                    {chkRenameWithTag,RENAME_WITH_TAG},
+                    {chkRenameWithExif,RENAME_WITH_EXIF},
+                    {rbtnUppercase,UPPERCASE},
+                    {rbtnLowercase,LOWERCASE},
+                    {chkCaseReplace,CASE_REPLACE},
+                    {rbtnUpperExtension,UPPER_EXTENSION},
+                    {rbtnLowerExtension,LOWER_EXTENSION},
+                    {chkReplace,REPLACE},
+                    {chkSpaces,SPACES},
+                    {chkAccents,ACCENTS},
+                    {chkEnies,ENIES},
+                    {chkInsert,INSERT},
+                    {chkDeleteFrom,DELETE_FROM},
+                    {chkDeleteChars,DELETE_CHARS},
+                    {chkDeleteBrackets,DELETE_MORE_ONE_SPACES},
+                    {chkDeleteMoreOneSpaces,DELETE_MORE_ONE_SPACES},
+                    {chkInsertNumbers,INSERT_NUMBERS}
+        };
         
-        if (chkRenameWithExif.isSelected() && (!tasksList.contains(RENAME_WITH_EXIF))){
-            tasksList.add(RENAME_WITH_EXIF);
-        }
+        String taskName;
+        boolean selected;
+        boolean contains;
         
-        if(rbtnUppercase.isSelected() && (!tasksList.contains(UPPERCASE))){
-            tasksList.add(UPPERCASE);
-        }
-        
-        if(rbtnLowercase.isSelected() && (!tasksList.contains(LOWERCASE))){
-            tasksList.add(LOWERCASE);
-        }
-        
-        if(chkCaseReplace.isSelected() && (!tasksList.contains(CASE_REPLACE))){
-            tasksList.add(CASE_REPLACE);
-        }
-
-        if(rbtnUpperExtension.isSelected() && (!tasksList.contains(UPPER_EXTENSION))){
-            tasksList.add(UPPER_EXTENSION);
-        }
-        
-        if(rbtnLowerExtension.isSelected() && (!tasksList.contains(LOWER_EXTENSION))){
-            tasksList.add(LOWER_EXTENSION);
-        }
-        
-        if(chkReplace.isSelected() && (!tasksList.contains(REPLACE))){
-            tasksList.add(REPLACE);
-        }
-        
-        if(chkSpaces.isSelected() && (!tasksList.contains(SPACES))){
-            tasksList.add(SPACES);
-        }
-        
-        if(chkAccents.isSelected() && (!tasksList.contains(ACCENTS))){
-            tasksList.add(ACCENTS);
-        }
-        
-        if(chkEnies.isSelected() && (!tasksList.contains(ENIES))){
-            tasksList.add(ENIES);
-        }
-        
-        if(chkInsert.isSelected() && (!tasksList.contains(INSERT))){
-            tasksList.add(INSERT);
-        }
-        
-        if(chkDeleteFrom.isSelected() && (!tasksList.contains(DELETE_FROM))){
-            tasksList.add(DELETE_FROM);
-        }
-        
-        if(chkDeleteChars.isSelected() && (!tasksList.contains(DELETE_CHARS))){
-            tasksList.add(DELETE_CHARS);
-        }
-        
-        if(chkDeleteBrackets.isSelected() && (!tasksList.contains(DELETE_BRACKETS))){
-            tasksList.add(DELETE_BRACKETS);
-        }
-        
-        if(chkDeleteMoreOneSpaces.isSelected() && (!tasksList.contains(DELETE_MORE_ONE_SPACES))){
-            tasksList.add(DELETE_MORE_ONE_SPACES);
-        }
-        
-        if(chkInsertNumbers.isSelected() && (!tasksList.contains(INSERT_NUMBERS))){
-            tasksList.add(INSERT_NUMBERS);
+        for (Object[] task : controls) {
+            taskName = (String) task[1];
+            selected = ((JToggleButton)task[0]).isSelected();
+            contains = tasksList.contains(taskName);
+            if(selected && !contains){
+                tasksList.add(taskName);
+            }
+            else if(!selected && contains){
+                tasksList.remove(taskName);
+            }
         }
     }
     
@@ -1486,9 +1485,12 @@ public class MainJFrame extends javax.swing.JFrame {
      * Se crean las descripciones de las tareas a ejecutar
      */
     private void createDescriptionTasks(){
+        
         tasksDescriptions.clear();
-        tasksDescriptions.put("RenameWithTag",chkRenameWithTag.getText());
-        tasksDescriptions.put("RenameWithExif", chkRenameWithExif.getText());
+        tasksDescriptions.put("RenameWithTag",
+                bundle.getString("Renombrar con tag") + " " + txfTag.getText());
+        tasksDescriptions.put("RenameWithExif", 
+                bundle.getString("Renombrar con EXIF") + " " + txfExif.getText() );
         tasksDescriptions.put("Uppercase",rbtnUppercase.getText());
         tasksDescriptions.put("Lowercase",rbtnLowercase.getText());
         Object o = cmbCaseReplace.getSelectedItem();
@@ -1504,15 +1506,29 @@ public class MainJFrame extends javax.swing.JFrame {
         }
         tasksDescriptions.put("Accents",chkAccents.getText());
         tasksDescriptions.put("Enies",chkEnies.getText());
-        tasksDescriptions.put("Insert",chkInsert.getText());
+        
+        tasksDescriptions.put("Insert",chkInsert.getText() + " '" + 
+                txfInsert.getText() + "'" +
+                (chkInsertEnd.isSelected() ? " " + bundle.getString("al final")
+                : " " + bundle.getString("en") + " " + spPosInsert.getValue()) );
         tasksDescriptions.put("DeleteFrom",chkDeleteFrom.getText());
-        tasksDescriptions.put("DeleteChars",chkDeleteChars.getText());
+        tasksDescriptions.put("DeleteChars",chkDeleteChars.getText() + 
+                " '" + txfDelete.getText() + "'");
         tasksDescriptions.put("DeleteBrackets",chkDeleteBrackets.getText());
         tasksDescriptions.put("DeleteMoreOneSpaces",chkDeleteMoreOneSpaces.getText());
-        tasksDescriptions.put("InsertNumbers",chkInsertNumbers.getText());
+        tasksDescriptions.put("InsertNumbers",
+                chkInsertNumbers.getText() + " " + lblNumberIn.getText() + " " +
+                spPosAutoNumber.getValue() +
+                ", " + lblStartAutoNumber.getText() + " " + 
+                spStartAutoNumber.getValue() +
+                (chkEqualLenDigits.isSelected() ? " y " + chkEqualLenDigits.getText() : "")
+                );
     }
     
-    private void deshacer(){
+    /**
+     * Undo
+     */
+    private void undo(){
         for (Iterator<File> it = filesRenamed.keySet().iterator(); it.hasNext();) {
             File fileName = it.next();
             File oldName = filesRenamed.get(fileName);
@@ -1521,6 +1537,9 @@ public class MainJFrame extends javax.swing.JFrame {
         refreshTable();
     }
     
+    /**
+     * Controls to initial values
+     */
     private void restartControls(){
         Component[] tabbedPane = tbPaneConversions.getComponents();
         
