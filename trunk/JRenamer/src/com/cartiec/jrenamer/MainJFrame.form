@@ -572,7 +572,7 @@
                 <Component class="javax.swing.JCheckBox" name="chkInsertNumbers">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="com/cartiec/jrenamer/MainJFrame.properties" key="Insertar N&#xfa;meros" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="com/cartiec/jrenamer/MainJFrame.properties" key="Insertar n&#xfa;meros" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                   <Constraints>
@@ -638,7 +638,7 @@
                 <Component class="javax.swing.JCheckBox" name="chkEqualLenDigits">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="com/cartiec/jrenamer/MainJFrame.properties" key="crear siempre con digitos iguales" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="com/cartiec/jrenamer/MainJFrame.properties" key="crear con digitos iguales" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;01, 02, 03&lt;br&gt;&#xa;001, 002, 003&#xa;&lt;/html&gt;"/>
                   </Properties>

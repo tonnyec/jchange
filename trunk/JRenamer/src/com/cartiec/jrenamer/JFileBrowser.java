@@ -3,7 +3,6 @@
  *
  * Created on 10 de julio de 2008, 16:11
  */
-
 package com.cartiec.jrenamer;
 
 import java.io.File;
@@ -15,9 +14,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author Tonny
  */
 public class JFileBrowser extends javax.swing.JPanel {
+
     public static String MOUSE_CLICKED = "MOUSE_CLICKED";
     DefaultMutableTreeNode top = null;
-    
     private File selectetFile = new File("");
 
     public File getSelectetFile() {
@@ -54,6 +53,7 @@ public class JFileBrowser extends javax.swing.JPanel {
         });
         tree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
+                treeTreeCollapsed(evt);
             }
             public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
                 treeTreeExpanded(evt);
@@ -73,7 +73,8 @@ private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
     Object o = node.getUserObject();
     selectetFile = (o instanceof File) ? (File) o : null;
-    firePropertyChange(MOUSE_CLICKED, null,selectetFile );
+    firePropertyChange(MOUSE_CLICKED, null, selectetFile);
+    checkNode((DefaultMutableTreeNode) node);
 }//GEN-LAST:event_treeMouseClicked
 
 private void treeTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_treeTreeExpanded
@@ -88,6 +89,10 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
     checkNode(node);
 }//GEN-LAST:event_treeValueChanged
 
+private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_treeTreeCollapsed
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+    checkNode(node);
+}//GEN-LAST:event_treeTreeCollapsed
 
     private void checkNode(DefaultMutableTreeNode node) {
         DefaultMutableTreeNode rootFile = null;
@@ -107,7 +112,17 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
                 }
             }
         }
-
+        
+        if((nodeInfo instanceof File) && (((File) nodeInfo).isDirectory())){
+            File files[] = ((File) nodeInfo).listFiles();
+            if (files == null) {
+                return;
+            }
+            if(files.length != node.getChildCount()){
+                node.removeAllChildren();
+            }
+        }
+                    
         if ((node.getChildCount() == 0) && (nodeInfo instanceof File) && (((File) nodeInfo).isDirectory())) {
             File files[] = ((File) nodeInfo).listFiles();
             if (files == null) {
@@ -119,7 +134,7 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
                     node.add(rootFile);
                 }
             }
-        }
+        }     
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
